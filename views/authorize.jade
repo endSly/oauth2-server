@@ -1,0 +1,9 @@
+extends layouts/session
+
+block content
+  img.logo(src='img/logo-white.png')
+  .span4.box
+    p this app wants to access your account...
+    form(method='post', action=authorize_url)
+      button(name='allow') Allow
+      button(name='deny') Deny

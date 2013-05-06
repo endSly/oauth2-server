@@ -1,0 +1,19 @@
+extends layouts/session
+
+block content
+  img.logo(src='img/logo-white.png')
+  .span4.box
+    form(method='post', action='/login')
+      .content-wrap
+        h6 Log in
+        input(type='hidden', name='next', value=next)
+        input.span12(type='text', name='email', placeholder='E-mail address')
+        input.span12(type='password', name='password', placeholder='Your password')
+        a.forgot(href='#') Forgot password?
+        .remember
+          input#remember-me(type='checkbox')
+          label(for='remember-me') Remember me
+        button.btn.primary.login(type='submit') Log in
+  .span4.no-account
+    p Don't have an account?
+    a(href='/signup') Sign up
