@@ -7,7 +7,6 @@ var express = require('express')
   , http = require('http')
   , path = require('path')
   , mongoose = require('mongoose')
-  , OAuth2Provider = require('oauth2-provider').OAuth2Provider
   , MemoryStore = express.session.MemoryStore;
 
 var app = express();
@@ -42,6 +41,8 @@ var provider = require('./provider');
 app.use(provider.oauth());
 app.use(provider.login());
 
+var User = require('./models/user');
+
 app.get('/', function(req, res, next) {
   console.dir(req.session);
   res.end('home, logged in? ' + !!req.session.user);
@@ -67,9 +68,20 @@ app.post('/login', function(req, res, next) {
   });
 });
 
-app.get('/logout', function(req, res, next) {
+app.get('/logout', function(req, res, next){
   req.session.destroy(function(err) {
     res.redirect('/');
+  });
+});
+
+app.get('/api/v1/user_info', function(req, res){
+  User.findOne({_id: req.session.user}, function(err, user){
+    if (!user) {
+      res.json(err, 403);
+    } else {
+      res.json(user);
+    }
+    
   });
 });
 
