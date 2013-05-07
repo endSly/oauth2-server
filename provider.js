@@ -101,13 +101,14 @@ provider.on('create_access_token', function(user_id, client_id, next) {
 // (optional) do something with the generated access token
 provider.on('save_access_token', function(user_id, client_id, access_token) {
   console.log('[oauth2] saving access token user_id: '+user_id+' client_id: '+client_id);
-  
+  /*
   var token = new AccessToken({user_id: user_id, token: access_token.access_token});
   token.save(function(err){
     if (err) {
       console.log('\033[31m'+'[oauth2] Error saving access token :'+err+'\033[0m');
     }
   });
+  */
 });
 
 // an access token was received in a URL query string parameter or HTTP header
