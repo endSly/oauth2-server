@@ -1,0 +1,21 @@
+extends ../../layouts/admin
+
+block content
+  #pad-wrapper.user-profile
+    .row-fluid.header
+      .span8
+        h3.span7= app.name
+      a.btn-flat.icon.pull-right.delete-user(data-toggle='tooltip', title='', data-placement='top', data-original-title='Delete user')
+        i.icon-trash
+      a.btn-flat.icon.large.pull-right.edit
+        | Edit this application
+    .row-fluid.profile
+
+      .span12
+        .section
+          h6 Client Id
+          pre= app._id
+
+          h6 Client Secret
+          pre= app.secret
+

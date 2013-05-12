@@ -1,0 +1,46 @@
+@import "layout";
+
+h1, h2, h3 {
+  font-family: sans-serif;
+}
+
+h1#title a {
+	font-family: sans-serif;
+  color: white;
+  text-transform: none;
+  font-size: 32px;
+  line-height: 32px;
+  padding-top: 6px;
+  padding-bottom: 6px;
+}
+
+h3 {
+  font-size: 28px;
+}
+
+.stats-row {
+  font-family: sans-serif;
+}
+
+.table ul.actions {
+  list-style: none;
+  float: right;
+  li {
+    display: inline-block;
+    padding: 0 6px;
+    margin: 4px 0;
+    font-size: 14px;
+    border-right: 1px solid rgba(81,98,115,0.5);
+    &:last-child {
+      border-right: none;
+    }
+    a {
+      color: #526273;
+      opacity: 0.7;
+      &:hover {
+        opacity: 1;
+        text-decoration: none;
+      }
+    }
+  }
+}

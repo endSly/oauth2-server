@@ -1,0 +1,23 @@
+extends ../../layouts/admin
+
+block content
+  #pad-wrapper.new-user
+    .row-fluid.header
+      h3 Create a new user
+    .row-fluid.form-wrapper
+
+      .span9.with-sidebar
+        .container
+          form(method='post', action='/admin/applications/new').new_user_form.inline-input
+            .span12.field-box
+              label Name:
+              input.span9(type='text', name='application[name]')
+            .span12.field-box
+              label Redirect URI:
+              input.span9(type='text')
+              
+            .span11.field-box.actions
+              input.btn-glow.primary(type='submit', value='Create application')
+              span OR
+              input.reset(type='reset', value='Cancel')
+

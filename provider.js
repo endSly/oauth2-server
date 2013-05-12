@@ -2,8 +2,7 @@
 var OAuth2Provider = require('oauth2-provider').OAuth2Provider
   , Client =  require('./models/client')
   , User =    require('./models/user')
-  , Grant =   require('./models/grant')
-  , AccessToken = require('./models/access_token');
+  , Grant =   require('./models/grant');
 
 var provider = new OAuth2Provider({crypt_key: 'encryption secret', sign_key: 'signing secret'});
 

@@ -4,17 +4,27 @@
  */
 
 var express = require('express')
+  , fs = require('fs')
   , http = require('http')
+  , https = require('https')
   , path = require('path')
   , mongoose = require('mongoose')
   , MemoryStore = express.session.MemoryStore;
 
-var app = express();
+var opts = {
+  key: fs.readFileSync('ssl/server/keys/tenzing.urbegi.com.key'),
+  cert: fs.readFileSync('ssl/server/certificates/tenzing.urbegi.com.crt'),
+  ca: fs.readFileSync('ssl/ca/ca.crt'),
+  requestCert: true,
+  rejectUnauthorized: false,
+  passphrase: "(N#*SY=mB58s+QQn\"mL?mb\"9<pE$Tc&Lvk?Vc&$p<Zx5ACd:"
+};
 
-var server = http.createServer(app);
+var app = express();
 
 app.configure(function(){
   app.set('port', process.env.PORT || 3000);
+  app.set('ssl port', process.env.PORT || 3443);
   app.set('views', __dirname + '/views');
   app.set('view engine', 'jade');
   app.use(express.logger('dev'));
@@ -41,50 +51,16 @@ var provider = require('./provider');
 app.use(provider.oauth());
 app.use(provider.login());
 
-var User = require('./models/user');
+var routes = require('./routes');
+routes(app);
 
-app.get('/', function(req, res, next) {
-  console.dir(req.session);
-  res.end('home, logged in? ' + !!req.session.user);
-});
-
-app.get('/login', function(req, res, next) {
-  if(req.session.user) {
-    res.redirect('/');
-  }
-  var next_url = req.query.next ? req.query.next : '/';
-  res.render('login', {next: next_url});
-});
-
-app.post('/login', function(req, res, next) {
-  User.findByEmailAndPassword(req.body.email, req.body.password, function(err, user){
-    if (!user) {
-      res.redirect('back');
-      
-      return;
-    }
-    req.session.user = user._id;
-    res.redirect(req.body.next || '/');
-  });
-});
-
-app.get('/logout', function(req, res, next){
-  req.session.destroy(function(err) {
-    res.redirect('/');
-  });
-});
-
-app.get('/api/v1/user_info', function(req, res){
-  User.findOne({_id: req.session.user}, function(err, user){
-    if (!user) {
-      res.json(err, 403);
-    } else {
-      res.json(user);
-    }
-    
-  });
-});
+var secureServer = https.createServer(opts, app)
+  , server = http.createServer(app);
 
 server.listen(app.get('port'), function(){
   console.log('OAuth 2 server listening on port ' + app.get('port') + ' in ' + app.get('env') + ' mode.');
+});
+
+secureServer.listen(app.get('ssl port'), function(){
+  console.log('Tenzing OAuth 2 secure server listening on port ' + app.get('ssl port') + ' in ' + app.get('env') + ' mode.');
 });
