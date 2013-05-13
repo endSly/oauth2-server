@@ -11,15 +11,6 @@ var express = require('express')
   , mongoose = require('mongoose')
   , MemoryStore = express.session.MemoryStore;
 
-var opts = {
-  key: fs.readFileSync('ssl/server/keys/tenzing.urbegi.com.key'),
-  cert: fs.readFileSync('ssl/server/certificates/tenzing.urbegi.com.crt'),
-  ca: fs.readFileSync('ssl/ca/ca.crt'),
-  requestCert: true,
-  rejectUnauthorized: false,
-  passphrase: "(N#*SY=mB58s+QQn\"mL?mb\"9<pE$Tc&Lvk?Vc&$p<Zx5ACd:"
-};
-
 var app = express();
 
 app.configure(function(){
@@ -54,14 +45,22 @@ app.use(provider.login());
 var routes = require('./routes');
 routes(app);
 
-var secureServer = https.createServer(opts, app)
-  , server = http.createServer(app);
+var server = http.createServer(app);
 
 server.listen(app.get('port'), function(){
   console.log('OAuth 2 server listening on port ' + app.get('port') + ' in ' + app.get('env') + ' mode.');
 });
 
 if (process.env.OAUTH_SECURE) {
+  var opts = {
+    key: fs.readFileSync('ssl/server/keys/tenzing.urbegi.com.key'),
+    cert: fs.readFileSync('ssl/server/certificates/tenzing.urbegi.com.crt'),
+    ca: fs.readFileSync('ssl/ca/ca.crt'),
+    requestCert: true,
+    rejectUnauthorized: false,
+    passphrase: "(N#*SY=mB58s+QQn\"mL?mb\"9<pE$Tc&Lvk?Vc&$p<Zx5ACd:"
+  };
+  var secureServer = https.createServer(opts, app);
   secureServer.listen(app.get('ssl port'), function(){
     console.log('Tenzing OAuth 2 secure server listening on port ' + app.get('ssl port') + ' in ' + app.get('env') + ' mode.');
   }); 
