@@ -61,6 +61,8 @@ server.listen(app.get('port'), function(){
   console.log('OAuth 2 server listening on port ' + app.get('port') + ' in ' + app.get('env') + ' mode.');
 });
 
-secureServer.listen(app.get('ssl port'), function(){
-  console.log('Tenzing OAuth 2 secure server listening on port ' + app.get('ssl port') + ' in ' + app.get('env') + ' mode.');
-});
+if (process.env.OAUTH_SECURE) {
+  secureServer.listen(app.get('ssl port'), function(){
+    console.log('Tenzing OAuth 2 secure server listening on port ' + app.get('ssl port') + ' in ' + app.get('env') + ' mode.');
+  }); 
+}
