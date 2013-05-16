@@ -7,14 +7,8 @@ html
 
     link(href='//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.1/css/bootstrap-combined.min.css', rel='stylesheet')
     link(href='//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.1/css/bootstrap-responsive.min.css', rel='stylesheet')
-    link(href='http://detail.herokuapp.com/css/bootstrap/bootstrap-overrides.css', type='text/css', rel='stylesheet')
-    
-    link(rel='stylesheet', type='text/css', href='http://detail.herokuapp.com/css/elements.css')
-    link(rel='stylesheet', type='text/css', href='http://detail.herokuapp.com/css/tables.css')
-    link(rel='stylesheet', type='text/css', href='http://detail.herokuapp.com/css/index.css')
-    link(rel='stylesheet', type='text/css', href='http://detail.herokuapp.com/css/lib/font-awesome.css');
-    link(rel='stylesheet', type='text/css', href='http://detail.herokuapp.com/css/font-awesome.css')
-    
+    link(href='//netdna.bootstrapcdn.com/font-awesome/3.1.1/css/font-awesome.min.css', rel='stylesheet')
+
     link(rel='stylesheet', href='http://detail.herokuapp.com/css/user-list.css', type='text/css', media='screen')
     link(rel='stylesheet', href='http://detail.herokuapp.com/css/new-user.css', type='text/css', media='screen')
     
@@ -22,9 +16,9 @@ html
     
     //if lt IE 9
       script(src='http://html5shim.googlecode.com/svn/trunk/html5.js')
-  body
-     
-    .navbar.navbar-inverse
+  
+  body 
+    header.navbar.navbar-inverse
       .navbar-inner
         h1#title
           a.brand(href='/admin') OAuth 2 Server Admin
@@ -42,15 +36,12 @@ html
             li
               a(href='/admin/applications') Applications
 
-        ul.nav.pull-right
+        ul.nav.pull-right.actions
           li.hidden-phone
             input.search(type='text')
           li.settings
             a(href='/admin/settings', role='button')
-              span.navbar_icon
-          li#fat-menu.dropdown
-            a.logout(href='/logout', role='button')
-              span.navbar_icon
+              i.icon-cog
  
     #sidebar-nav.hidden-phone
       ul#dashboard-menu
@@ -82,4 +73,7 @@ html
         .arrow_border
       .container-fluid
         block content
+    
+    footer.footer
+      span.copyright © 2013 My company
         

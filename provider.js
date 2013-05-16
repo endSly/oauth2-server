@@ -23,7 +23,7 @@ provider.on('authorize_form', function(req, res, client_id, authorize_url) {
       res.json('error', 404);
       return;
     }
-    res.render('authorize', {authorize_url: authorize_url, app: client});
+    res.render('sessions/authorize', {authorize_url: authorize_url, app: client});
   });
 });
 

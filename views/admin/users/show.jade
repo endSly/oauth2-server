@@ -1,4 +1,4 @@
-extends ../../layouts/admin
+extends ../layout
 
 block content
   #pad-wrapper.user-profile
@@ -7,7 +7,7 @@ block content
         h3.span7= user.name
       a.btn-flat.icon.pull-right.delete-user(data-toggle='tooltip', title='', data-placement='top', data-original-title='Delete user')
         i.icon-trash
-      a.btn-flat.icon.large.pull-right.edit
+      a.btn-flat.icon.large.pull-right.edit(href='./edit')
         | Edit this user
     .row-fluid.profile
 

@@ -1,4 +1,4 @@
-extends ../../layouts/admin
+extends ../layout
 
 block content
   #pad-wrapper.new-user
@@ -31,10 +31,6 @@ block content
                 input.span12.small(type='text', placeholder='City')
                 input.span12.small(type='text', placeholder='State')
                 input.span12.small.last(type='text', placeholder='Postal Code')
-            .span12.field-box.textarea
-              label Notes:
-              textarea.span9
-              span.charactersleft 90 characters remaining. Field limited to 100 characters
             .span11.field-box.actions
               input.btn-glow.primary(type='submit', value='Create user')
               span OR

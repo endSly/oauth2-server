@@ -1,4 +1,8 @@
-@import "layout";
+@import "admin/bootstrap-overrides";
+@import "admin/layout";
+@import "admin/tables";
+@import "admin/elements";
+@import "admin/index";
 
 h1, h2, h3 {
   font-family: sans-serif;
@@ -10,8 +14,8 @@ h1#title a {
   text-transform: none;
   font-size: 32px;
   line-height: 32px;
-  padding-top: 6px;
-  padding-bottom: 6px;
+  padding-top: 4px;
+  padding-bottom: 5px;
 }
 
 h3 {
@@ -20,6 +24,10 @@ h3 {
 
 .stats-row {
   font-family: sans-serif;
+}
+
+ul.nav.actions i {
+  font-size: 16px;
 }
 
 .table ul.actions {
