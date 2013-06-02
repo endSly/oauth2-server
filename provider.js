@@ -168,7 +168,7 @@ provider.on('lookup_grant', function(client_id, client_secret, code, next) {
 provider.on('create_access_token', function(user_id, client_id, next) {
   console.log("[oauth2] create_access_token user_id: "+user_id+" client_id: "+client_id);
   
-  Subscription.findOne({client_id: client._id, user_id: req.session.user}, function(err, subscription){
+  Subscription.findOne({client_id: client_id, user_id: user_id}, function(err, subscription){
     var extra_data = {subscription_id: subscription._id}; // can be any data type or null
     var oauth_params;
     
