@@ -1,4 +1,5 @@
-var User = require('../models/user');
+var User = require('../models/user')
+  , Subscription = require('../models/subscription');
 
 var adminRoutes = require('./admin');
 
