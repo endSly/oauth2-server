@@ -9,12 +9,12 @@ block content
         input.span12(type='text', name='user[name]', placeholder='Your name')
         input.span12(type='text', name='user[email]', placeholder='E-mail address')
         input.span12(type='password', name='user[password]', placeholder='Password')
-        input.span12(type='password', name='password_confirmation', placeholder='Password confirmation')
+        input.span12(type='password', name='user[password_confirmation]', placeholder='Password confirmation')
         a.forgot(href='#') Forgot password?
         .remember
           input#remember-me(type='checkbox')
           label(for='remember-me') Remember me
-        button.btn.primary.login(type='submit') Log in
+        button.btn.primary.login(type='submit') Sign up
   .span4.no-account
     p Do you have an account?
     a(href='/login') Login

@@ -1,0 +1,79 @@
+#pad-wrapper.list
+  .row-fluid.header
+    h3 Users
+    .span10.pull-right
+      input.span5.search(type='text', placeholder='Type a user name...')
+      .ui-dropdown
+        .head(data-toggle='tooltip', title='', data-original-title='Click me!')
+          | Filter users
+          i.arrow-down
+        .dialog(style='display: none;')
+          .pointer
+            .arrow
+            .arrow_border
+          .body
+            p.title
+              | Show users where:
+            .form
+              select
+                option Name
+                option Email
+                option Number of orders
+                option Signed up
+                option Last seen
+              select
+                option is equal to
+                option is not equal to
+                option is greater than
+                option starts with
+                option contains
+              input(type='text')
+              a.btn-flat.small Add filter
+      a.btn-flat.success.pull-right(href='/admin/users/new')
+        span +
+        | NEW USER
+  .row-fluid.table
+    table.table.table-hover
+      thead
+        tr
+          th.span4.sortable
+            | Name
+          th.span3.sortable
+            span.line
+            | Email
+          th.span2.sortable
+            span.line
+            | Total spent
+          th.span3.sortable.align-right
+            span.line
+            | Action
+      tbody
+        tr(ng-repeat='user in users')
+          td
+            img.img-circle.avatar.hidden-phone(src='')
+            a.name(href='#') {{users.name}}
+          td
+            a(href='') {{user.email}}
+          td
+          td.align-right
+            ul.actions
+              li
+                a(ng-href="/admin/users/{{user._id}}")
+                  i.icon-eye-open
+              li
+                a(ng-href="/admin/users/{{user._id}}/edit")
+                  i.icon-pencil
+              li.last
+                a(ng-click="delete(user)")
+                  i.icon-trash
+        
+  .pagination.pull-right
+    ul
+      li
+        a(href='http://detail.herokuapp.com/user-list.html#') ‹
+        
+      li(ng-repeat='n in range(Math.min(5, pagesCount))')
+        a.active(href='http://detail.herokuapp.com/user-list.html#') {{n}}
+        
+      li
+        a(href='http://detail.herokuapp.com/user-list.html#') ›

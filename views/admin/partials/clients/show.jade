@@ -1,0 +1,37 @@
+
+#pad-wrapper.user-profile
+  .row-fluid.header
+    .span8
+      h3.span8 {{client.name}}
+    .row.ctrls
+      a.btn-flat.pull-right.danger.delete(data-toggle='tooltip', title='', data-placement='top', data-original-title='Delete user')
+        i.icon-trash
+        | Delete
+      a.btn-flat.pull-right.edit(ng-href="./{{client._id}}/edit")
+        i.icon-pencil
+        | Edit
+  .row-fluid
+    .span12
+      .section
+        h6 Client Id
+        pre {{client._id}}
+
+        h6 Client Secret
+        pre {{client.secret}}
+        
+      
+    .span12.section
+      h4 Plans
+      table.table.table-hover
+        thead
+          tr
+            th Id
+            th Name
+            th Open access
+        tbody
+          tr(ng-repeat='plan in plans')
+            td {{plan._id}}
+            td {{plan.name}}
+            td {{plan.open_access}}
+          
+

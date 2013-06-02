@@ -1,0 +1,15 @@
+#pad-wrapper.user-profile
+  .row-fluid.header
+    .span8
+      h3.span7 {{user.name}}
+    a.btn-flat.icon.pull-right.delete-user(data-toggle='tooltip', title='', data-placement='top', data-original-title='Delete user')
+      i.icon-trash
+    a.btn-flat.icon.large.pull-right.edit(ng-href='./edit')
+      | Edit this user
+  .row-fluid.profile
+
+    .span9
+      .section
+        h6 Email
+        pre.span6  {{user.email}}
+

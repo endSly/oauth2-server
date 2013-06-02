@@ -1,27 +1,27 @@
 !!! 5
-html
+html(ng-app='app')
   head
     meta(http-equiv='Content-Type', content='text/html; charset=UTF-8')
     title OAuth 2 Server Admin
     meta(name='viewport', content='width=device-width, initial-scale=1.0')
 
-    link(href='//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.1/css/bootstrap-combined.min.css', rel='stylesheet')
-    link(href='//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.1/css/bootstrap-responsive.min.css', rel='stylesheet')
-    link(href='//netdna.bootstrapcdn.com/font-awesome/3.1.1/css/font-awesome.min.css', rel='stylesheet')
+    link(ng-href='//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.1/css/bootstrap-combined.min.css', rel='stylesheet')
+    link(ng-href='//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.1/css/bootstrap-responsive.min.css', rel='stylesheet')
+    link(ng-href='//netdna.bootstrapcdn.com/font-awesome/3.1.1/css/font-awesome.min.css', rel='stylesheet')
 
-    link(rel='stylesheet', href='http://detail.herokuapp.com/css/user-list.css', type='text/css', media='screen')
-    link(rel='stylesheet', href='http://detail.herokuapp.com/css/new-user.css', type='text/css', media='screen')
+    link(rel='stylesheet', type='text/css', ng-href='/stylesheets/admin.css')
     
-    link(rel='stylesheet', type='text/css', href='/stylesheets/admin.css')
+    script(src='//ajax.googleapis.com/ajax/libs/angularjs/1.0.7/angular.min.js')
+    script(src='/javascripts/app.js')
     
     //if lt IE 9
       script(src='http://html5shim.googlecode.com/svn/trunk/html5.js')
   
-  body 
+  body(ng-controller='AdminCtrl')
     header.navbar.navbar-inverse
       .navbar-inner
         h1#title
-          a.brand(href='/admin') OAuth 2 Server Admin
+          a.brand(ng-href='/admin') OAuth 2 Server Admin
          
         button.btn.btn-navbar.visible-phone(type='button', data-toggle='collapse', data-target='.nav-collapse')
           span.icon-bar
@@ -30,40 +30,40 @@ html
         .nav-collapse.collapse.visible-phone.mobile-menu
           ul.nav
             li
-              a(href='/admin') Home
+              a(ng-href='/admin') Home
             li.active
-              a(href='/admin/users') Users
+              a(ng-href='/admin/users') Users
             li
-              a(href='/admin/applications') Applications
+              a(ng-href='/admin/clients') Applications
 
         ul.nav.pull-right.actions
           li.hidden-phone
             input.search(type='text')
           li.settings
-            a(href='/admin/settings', role='button')
+            a(ng-href='/admin/settings', role='button')
               i.icon-cog
  
     #sidebar-nav.hidden-phone
       ul#dashboard-menu
-        li(class=(menu == 'home' ? 'active' : ''))
+        li(ng-class='active')
           .pointer
             .arrow
             .arrow_border
-          a(href='/admin')
+          a(ng-href='/admin')
             i.icon-home
             span Home
         li(class=(menu == 'users' ? 'active' : ''))
           .pointer
             .arrow
             .arrow_border
-          a(href='/admin/users')
+          a(ng-href='/admin/users')
             i.icon-group
             span Users
         li(class=(menu == 'apps' ? 'active' : ''))
           .pointer
             .arrow
             .arrow_border
-          a(href='/admin/applications')
+          a(ng-href='/admin/clients')
             i.icon-th-large
             span Applications
 
@@ -71,8 +71,7 @@ html
       .pointer
         .arrow
         .arrow_border
-      .container-fluid
-        block content
+      .container-fluid(ng-view)
     
     footer.footer
       span.copyright © 2013 My company

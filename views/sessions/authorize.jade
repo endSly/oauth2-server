@@ -1,9 +1,10 @@
 extends layout
 
 block content
-  img.logo(src='img/logo-white.png')
+  h1 OAuth 2 Server
   .span4.box
     p this app wants to access your account...
     form(method='post', action=authorize_url)
+      input(name='subscription_id', type='hidden', value=subscription._id)
       button(name='allow') Allow
       button(name='deny') Deny

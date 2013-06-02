@@ -8,7 +8,7 @@ var mongoose = require('mongoose')
 var schema = mongoose.Schema({
   name:   String,
   secret: String,
-  redirect_uri: String
+  redirect_uri: String,
 });
 
 schema.methods.generateSecret = function(){

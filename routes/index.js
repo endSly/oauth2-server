@@ -39,17 +39,12 @@ module.exports = function(app){
   });
   
   app.post('/signup', function(req, res, next) {
-    if (req.body.user.password == req.body.password_confirmation) {
-      
+    if (req.body.user.password != req.body.user.password_confirmation) {
+      res.redirect('/signup');
+      return
     }
-    var user = new User({});
-    User.findByEmailAndPassword(req.body.email, req.body.password, function(err, user){
-      if (!user) {
-        res.redirect('back');
-        
-        return;
-      }
-      req.session.user = user._id;
+    var user = new User(req.body.user);
+    user.save(function(err){
       res.redirect(req.body.next || '/');
     });
   });
@@ -61,13 +56,13 @@ module.exports = function(app){
   });
   
   app.get('/api/v1/user_info', function(req, res){
-    User.findOne({_id: req.session.user}, function(err, user){
+    User.findById(req.session.user, function(err, user){
       if (!user) {
-        res.json(err, 403);
-      } else {
-        res.json(user);
+        return res.json(err, 403);
       }
-      
+      Subscription.findById(req.session.data.subscription_id, function(err, subscription){
+        res.json({_id: user._id, name: user.name, email: user.email, subscription: subscription});
+      });
     });
   });
   

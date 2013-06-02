@@ -1,0 +1,34 @@
+.row-fluid.form-wrapper
+  .span9.with-sidebar
+    .container
+      form.inline-input
+        .span12.field-box
+          label Name:
+          input.span9(type='text', ng-model='client.name')
+        .span12.field-box
+          label Redirect URI:
+          input.span9(type='text', ng-model='client.redirect_uri')
+        
+        hr
+        .span12
+          h4 Plans
+          
+        .span12.fluid-row.group-box(ng-repeat='plan in plans')
+          .span11.field-box
+            label Name:
+            input.span9(type='text', ng-model='plan.name')
+            
+          .span11.field-box
+            label Open Access:
+            input.span9(type='checkbox', ng-model='plan.open_access')
+          .span11.field-box.actions
+            button.btn-flat.danger(ng-click="removePlan(plan)") - Delete plan
+              
+              
+        .span11.field-box.actions
+          button.btn-flat.primary(ng-click="addPlan()") + New plan
+         
+        .span11.field-box.actions
+          input.btn-glow.primary(type='submit', value='Create application')
+          span OR
+          input.reset(type='reset', value='Cancel')

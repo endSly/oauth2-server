@@ -1,0 +1,34 @@
+.span9.with-sidebar
+  .container
+    form.new_user_form.inline-input
+      input.span9(type='hidden', ng-model='user._id')
+      .span12.field-box
+        label Name:
+        input.span9(type='text', ng-model='user.name')
+      .span12.field-box
+        label Email:
+        input.span9(type='text', ng-model='user.email')
+      .span12.field-box
+        label Password:
+        input.span9(type='password', ng-model='user.password')
+      .span12.field-box
+        label Phone:
+        input.span9(type='text')
+      .span12.field-box
+        label Website:
+        input.span9(type='text')
+      .span12.field-box
+        label Address:
+        .address-fields
+          input.span12(type='text', placeholder='Street address')
+          input.span12.small(type='text', placeholder='City')
+          input.span12.small(type='text', placeholder='State')
+          input.span12.small.last(type='text', placeholder='Postal Code')
+      .span12.field-box.textarea
+        label Notes:
+        textarea.span9
+        span.charactersleft 90 characters remaining. Field limited to 100 characters
+      .span11.field-box.actions
+        input.btn-glow.primary(type='submit', value='Save user')
+        span OR
+        input.reset(type='reset', value='Cancel')

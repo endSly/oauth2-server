@@ -1,5 +1,7 @@
 var User = require('../models/user')
-  , Client = require('../models/client');
+  , Client = require('../models/client')
+  , Plan = require('../models/plan')
+  , Subscription = require('../models/subscription');
 
 var checkAuthorized = function(req, res, next){
 
@@ -18,78 +20,116 @@ var checkAuthorized = function(req, res, next){
    
     next();
   } else {
-    res.render('404', 404);
+    console.log('unauthorized!');
+    res.status(404);
+    res.render('404');
   }
 };
 
 module.exports = function(app){
-  
-  app.get('/admin', checkAuthorized, function(req, res) {
-    res.render('admin/index', {menu: 'home'});
-  });
 
-  app.get('/admin/users', checkAuthorized, function(req, res) {
-    User.find({}, function(err, users){
-      res.render('admin/users/index', {users: users, menu: 'users'});
+
+  /*
+   *  Users
+   */
+
+
+  app.get('/admin/users.json', checkAuthorized, function(req, res) {
+    User.find({}, null, {skip: req.params.skip || 0, limit: req.params.limit || 10}, function(err, rows){
+      User.count({}, function(err, count){
+        res.json({rows: rows, count: count});
+      });
     });
     
   });
   
-  app.get('/admin/users/new', checkAuthorized, function(req, res) {
-    var user = new User({});
-    res.render('admin/users/new', {user: user, menu: 'users'});
-  });
-  
-  app.post('/admin/users/new', checkAuthorized, function(req, res) {
+  app.post('/admin/users/new.json', checkAuthorized, function(req, res) {
     var user = new User(req.body.user);
     user.save(function(err){
-      console.log(user);
-      res.redirect('admin/users');
+      res.json(user);
     });
   });
   
-  app.get('/admin/users/:id', checkAuthorized, function(req, res){
-    User.findOne({_id: req.params.id}, function(err, user){
-      res.render('admin/users/show', {user: user, menu: 'users'});
+  app.get('/admin/users/:id.json', checkAuthorized, function(req, res){
+    User.findById(req.params.id, function(err, user){
+      Subscription.find({user_id: user._id}, function(err, subscriptions){
+        res.json({user: user, subscriptions: subscriptions});
+      });
+      
     });
   });
   
-  app.get('/admin/users/:id/edit', checkAuthorized, function(req, res){
-    User.findOne({_id: req.params.id}, function(err, user){
-      res.render('admin/users/edit', {user: user, menu: 'users'});
-    });
-  });
-  
-  app.post('/admin/users/:id', checkAuthorized, function(req, res){
-    User.findOne({_id: req.body.user_id}, function(err, user){
+  app.post('/admin/users/:id.json', checkAuthorized, function(req, res){
+    User.findById(req.body.user_id, function(err, user){
       user.update(req.body.user, function(err){
-        res.redirect('admin/users');
+        res.json(err);
       });
     });
   });
   
-  app.get('/admin/applications', checkAuthorized, function(req, res) {
-    Client.find({}, function(err, apps){
-      res.render('admin/applications/index', {apps: apps, menu: 'apps'});
+  app.delete('/admin/users/:id.json', checkAuthorized, function(req, res) {
+    User.findByIdAndRemove(req.params.id, function(err){
+      res.json(err);
     });
   });
   
-  app.get('/admin/applications/new', checkAuthorized, function(req, res) {
-    res.render('admin/applications/new', {menu: 'apps'});
-  });
   
-  app.post('/admin/applications/new', checkAuthorized, function(req, res) {
-    var app = new Client(req.body.application);
-    app.generateSecret();
-    app.save(function(err){
-      res.redirect('admin/applications');
+  /*
+   *  Clients
+   */
+  
+  app.get('/admin/clients.json', checkAuthorized, function(req, res) {
+    Client.find({}, function(err, clients){
+      res.json(clients);
     });
   });
   
-  app.get('/admin/applications/:id', checkAuthorized, function(req, res) {
-    Client.findOne({_id: req.params.id}, function(err, app){
-      res.render('admin/applications/show', {app: app, menu: 'apps'});
+  app.post('/admin/clients/new.json', checkAuthorized, function(req, res) {
+    var client = new Client(req.body.client);
+    client.generateSecret();
+    client.save(function(err){
+      res.json(client);
     });
+  });
+  
+  app.get('/admin/clients/:id.json', checkAuthorized, function(req, res) {
+    Client.findById(req.params.id, function(err, client){
+      Plan.find({client_id: client._id}, function(err, plans){
+        res.json({client: client, plans: plans});
+      });
+    });
+  });
+  
+  app.post('/admin/clients/:id.json', checkAuthorized, function(req, res) {
+    Client.findById(req.params.id, function(err, app){
+      app.update(req.body.client, function(err){
+        for (idx in req.body.plans) {
+          plan = new Plan(req.body.plans[idx]);
+          plan.save();
+        }
+        res.json(err);
+      });
+    });
+  });
+  
+  
+  app.delete('/admin/clients/:id.json', checkAuthorized, function(req, res) {
+    Client.findByIdAndRemove(req.params.id, function(err){
+      res.json(err);
+    });
+  });
+  
+  
+  
+  /*
+   * Generic routes
+   */
+  app.get('/admin/partials/*', checkAuthorized, function(req, res){
+    res.render('admin/partials/'+req.params[0]);
+  });
+
+  app.get('/admin(/*)?', checkAuthorized, function(req, res) {
+    res.render('admin/app', {menu: 'home'});
   });
 
 };
