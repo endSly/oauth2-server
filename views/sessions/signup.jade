@@ -6,6 +6,7 @@ block content
     form(method='post', action='/signup')
       .content-wrap
         h6 Sign up
+        input(type='hidden', name='next', value=next)
         input.span12(type='text', name='user[name]', placeholder='Your name')
         input.span12(type='text', name='user[email]', placeholder='E-mail address')
         input.span12(type='password', name='user[password]', placeholder='Password')

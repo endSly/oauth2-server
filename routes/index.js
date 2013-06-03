@@ -1,5 +1,5 @@
-var User = require('../models/user')
-  , Subscription = require('../models/subscription');
+var User          = require('../models/user')
+  , Subscription  = require('../models/subscription');
 
 var adminRoutes = require('./admin');
 
@@ -8,14 +8,18 @@ module.exports = function(app){
   adminRoutes(app);
   
   app.get('/', function(req, res, next) {
-    res.redirect('/login');
+    if(req.session.user) {
+      res.json('loggedin');
+    } else {
+      res.redirect('/login')
+    }
   });
 
   app.get('/login', function(req, res, next) {
     if(req.session.user) {
       res.redirect('/');
     }
-    var next_url = req.query.next ? req.query.next : '/';
+    var next_url = req.query.next || '/';
     res.render('sessions/login', {next: next_url});
   });
   
@@ -35,7 +39,7 @@ module.exports = function(app){
     if(req.session.user) {
       res.redirect('/');
     }
-    var next_url = req.query.next ? req.query.next : '/';
+    var next_url = req.query.next || '/';
     res.render('sessions/signup', {next: next_url});
   });
   
