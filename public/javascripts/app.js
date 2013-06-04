@@ -16,8 +16,6 @@ var app = angular
     
     $locationProvider.html5Mode(true);
   }]);
-  
-
 
 function AdminCtrl($rootScope, $scope, $location){
   
