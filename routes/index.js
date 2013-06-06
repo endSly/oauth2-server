@@ -9,7 +9,7 @@ module.exports = function(app){
   
   app.get('/', function(req, res, next) {
     if(req.session.user) {
-      res.json('loggedin');
+      res.redirect('//tenzing.urbegi.com/');
     } else {
       res.redirect('/login')
     }
@@ -49,6 +49,7 @@ module.exports = function(app){
     }
     var user = new User(req.body.user);
     user.save(function(err){
+      req.session.user = user._id;
       res.redirect(req.body.next || '/');
     });
   });
