@@ -1,10 +1,10 @@
-var User = require('../models/user')
-  , Client = require('../models/client')
-  , Plan = require('../models/plan')
-  , Subscription = require('../models/subscription');
+var User =          require('../models/user')
+  , Client =        require('../models/client')
+  , Plan =          require('../models/plan')
+  , Subscription =  require('../models/subscription');
 
 var checkAuthorized = function(req, res, next){
-
+  /*
   if(req.client.authorized){
     var subject = req.connection.getPeerCertificate().subject;
 
@@ -23,7 +23,8 @@ var checkAuthorized = function(req, res, next){
     console.log('unauthorized!');
     res.status(404);
     res.render('404');
-  }
+  }*/
+  next();
 };
 
 module.exports = function(app){

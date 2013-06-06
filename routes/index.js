@@ -37,7 +37,7 @@ module.exports = function(app){
   
   app.get('/signup', function(req, res, next) {
     if(req.session.user) {
-      res.redirect('/');
+      return res.redirect('/');
     }
     var next_url = req.query.next || '/';
     res.render('sessions/signup', {next: next_url});
@@ -45,8 +45,7 @@ module.exports = function(app){
   
   app.post('/signup', function(req, res, next) {
     if (req.body.user.password != req.body.user.password_confirmation) {
-      res.redirect('/signup');
-      return
+      return res.redirect('/signup');
     }
     var user = new User(req.body.user);
     user.save(function(err){

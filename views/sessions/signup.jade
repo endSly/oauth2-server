@@ -18,4 +18,4 @@ block content
         button.btn.primary.login(type='submit') Sign up
   .span4.no-account
     p Do you have an account?
-    a(href='/login') Login
+    a(href='/login?next='+encodeURIComponent(next)) Login
