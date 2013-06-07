@@ -9,7 +9,7 @@ module.exports = function(app){
   
   app.get('/', function(req, res, next) {
     if(req.session.user) {
-      res.redirect('//tenzing.urbegi.com/');
+      res.redirect('http://mysite.example.com/');
     } else {
       res.redirect('/login')
     }
@@ -27,7 +27,6 @@ module.exports = function(app){
     User.findByEmailAndPassword(req.body.email, req.body.password, function(err, user){
       if (!user) {
         res.redirect('back');
-        
         return;
       }
       req.session.user = user._id;
@@ -61,12 +60,24 @@ module.exports = function(app){
   });
   
   app.get('/api/v1/user_info', function(req, res){
+    if (!req.session.user) {
+      return res.json(403, {error: "forbidden"})
+    }
     User.findById(req.session.user, function(err, user){
       if (!user) {
-        return res.json(err, 403);
+        return res.json(403, {error: "forbidden"})
       }
       Subscription.findById(req.session.data.subscription_id, function(err, subscription){
-        res.json({_id: user._id, name: user.name, email: user.email, subscription: subscription});
+        res.json({
+          _id: user._id, 
+          name: user.name, 
+          email: user.email, 
+          subscription: {
+            _id: subscription._id,
+            plan_name: subscription.plan_name
+          }
+        });
+        
       });
     });
   });

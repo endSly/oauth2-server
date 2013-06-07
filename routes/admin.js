@@ -1,6 +1,7 @@
+var _ = require('underscore')
+
 var User =          require('../models/user')
   , Client =        require('../models/client')
-  , Plan =          require('../models/plan')
   , Subscription =  require('../models/subscription');
 
 var checkAuthorized = function(req, res, next){
@@ -28,14 +29,14 @@ var checkAuthorized = function(req, res, next){
 
 module.exports = function(app){
 
-
   /*
    *  Users
    */
 
 
   app.get('/admin/users.json', checkAuthorized, function(req, res) {
-    User.find({}, null, {skip: req.params.skip || 0, limit: req.params.limit || 10}, function(err, rows){
+    User.find({}, '_id email name', {skip: req.params.skip || 0, limit: req.params.limit || 10}, function(err, users){
+      var rows = _.map(users, function(user){ return _.pick(user, '_id', 'email', 'name', 'email_md5'); });
       User.count({}, function(err, count){
         res.json({rows: rows, count: count});
       });
@@ -52,6 +53,7 @@ module.exports = function(app){
   
   app.get('/admin/users/:id.json', checkAuthorized, function(req, res){
     User.findById(req.params.id, function(err, user){
+      user = _.pick(user, '_id', 'email', 'name', 'email_md5')
       Subscription.find({user_id: user._id}, function(err, subscriptions){
         res.json({user: user, subscriptions: subscriptions});
       });
@@ -88,26 +90,24 @@ module.exports = function(app){
     var client = new Client(req.body.client);
     client.generateSecret();
     client.save(function(err){
+      if (err) { return res.json(500, {error: err}); }
       res.json(client);
     });
   });
   
   app.get('/admin/clients/:id.json', checkAuthorized, function(req, res) {
     Client.findById(req.params.id, function(err, client){
-      Plan.find({client_id: client._id}, function(err, plans){
-        res.json({client: client, plans: plans});
-      });
+      if (err) { return res.json(500, {error: err}); }
+      res.json(client);
     });
   });
   
   app.post('/admin/clients/:id.json', checkAuthorized, function(req, res) {
-    Client.findById(req.params.id, function(err, app){
-      app.update(req.body.client, function(err){
-        for (idx in req.body.plans) {
-          plan = new Plan(req.body.plans[idx]);
-          plan.save();
-        }
-        res.json(err);
+    Client.findById(req.params.id, function(err, client){
+      var clientObj = _.omit(req.body.client, '_id', '__v', 'secret');
+      client.update(clientObj, function(err){
+        if (err) { return res.json(500, {error: err}); }
+        res.json(client);
       });
     });
   });
@@ -115,7 +115,8 @@ module.exports = function(app){
   
   app.delete('/admin/clients/:id.json', checkAuthorized, function(req, res) {
     Client.findByIdAndRemove(req.params.id, function(err){
-      res.json(err);
+      if (err) { return res.json(500, {error: err}); }
+        res.json("Ok");
     });
   });
   

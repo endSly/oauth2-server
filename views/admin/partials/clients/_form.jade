@@ -1,34 +1,46 @@
 .row-fluid.form-wrapper
-  .span9.with-sidebar
+  .span12
     .container
       form.inline-input
-        .span12.field-box
+        .span9.field-box
           label Name:
           input.span9(type='text', ng-model='client.name')
-        .span12.field-box
+        .span9.field-box
           label Redirect URI:
           input.span9(type='text', ng-model='client.redirect_uri')
         
         hr
         .span12
-          h4 Plans
-          
-        .span12.fluid-row.group-box(ng-repeat='plan in plans')
-          .span11.field-box
-            label Name:
-            input.span9(type='text', ng-model='plan.name')
-            
-          .span11.field-box
-            label Open Access:
-            input.span9(type='checkbox', ng-model='plan.open_access')
-          .span11.field-box.actions
-            button.btn-flat.danger(ng-click="removePlan(plan)") - Delete plan
-              
+          h6 Plans
+          br
+        table.table.table-hover.fluid-row
+          thead
+            tr
+              th.span5 Name
+              th.span2 Open access
+              th.span2 Default Plan
+              th.span3 Actions
+          tbody
+            tr(ng-repeat='plan in client.plans')
+              td
+                input.span9(type='text', ng-model='plan.name')
+                
+              td.align-right
+                input(type='checkbox', ng-model='plan.open_access')
+                
+              td.align-right
+                input(type='checkbox', ng-model='plan.default')
+                
+              td.align-right
+                ul.actions
+                  li.last
+                    a(ng-click='removePlan(plan)')
+                      i.icon-trash
               
         .span11.field-box.actions
           button.btn-flat.primary(ng-click="addPlan()") + New plan
          
         .span11.field-box.actions
-          input.btn-glow.primary(type='submit', value='Create application')
+          button.btn-glow.primary(ng-click='saveApplication()') Save application
           span OR
           input.reset(type='reset', value='Cancel')

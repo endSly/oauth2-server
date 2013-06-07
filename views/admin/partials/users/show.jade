@@ -1,15 +1,48 @@
 #pad-wrapper.user-profile
   .row-fluid.header
     .span8
-      h3.span7 {{user.name}}
-    a.btn-flat.icon.pull-right.delete-user(data-toggle='tooltip', title='', data-placement='top', data-original-title='Delete user')
-      i.icon-trash
-    a.btn-flat.icon.large.pull-right.edit(ng-href='./edit')
-      | Edit this user
+      img.img-circle.avatar(src="//www.gravatar.com/avatar/{{user.email_md5}}?s=80")
+      h3.name {{user.name}}
+    .row.ctrls
+      a.btn-flat.pull-right.danger.delete(data-toggle='tooltip', title='', data-placement='top', data-original-title='Delete user')
+        i.icon-trash
+        | Delete
+      a.btn-flat.pull-right.edit(ng-href="./{{user._id}}/edit")
+        i.icon-pencil
+        | Edit
   .row-fluid.profile
-
-    .span9
+    .span12
       .section
         h6 Email
+        br
         pre.span6  {{user.email}}
+      
+      .section
+        h6 Subscriptions
+        br
+        table.table.table-hover
+          thead
+            tr
+              th App Id
+              th Plan Name
+              th Allowed
+              th Created
+              th Expires
+              th Action
+          tbody
+            tr(ng-repeat="subscription in subscriptions")
+              td 
+                a(ng-href="/admin/clients/{{subscription.client_id}}")
+                  {{ subscription.client_id }}
+              td {{ subscription.plan_name }}
+              td
+                i(ng-class="subscription.allowed | iconBoolean")
+              td {{ subscription.created_at }}
+              td {{ subscription.expires_at }}
+              td.align-right
+                ul.actions
+                  li.last
+                    a(ng-click="deleteSubscription(subscription)")
+                      i.icon-trash
+                
 

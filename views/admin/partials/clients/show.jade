@@ -14,24 +14,26 @@
     .span12
       .section
         h6 Client Id
+        br
         pre {{client._id}}
 
         h6 Client Secret
+        br
         pre {{client.secret}}
-        
-      
-    .span12.section
-      h4 Plans
-      table.table.table-hover
-        thead
-          tr
-            th Id
-            th Name
-            th Open access
-        tbody
-          tr(ng-repeat='plan in plans')
-            td {{plan._id}}
-            td {{plan.name}}
-            td {{plan.open_access}}
-          
 
+      .section
+        h6 Plans
+        br
+        table.table.table-hover
+          thead
+            tr
+              th.span6 Name
+              th.span3 Open access
+              th.span3 Default Plan
+          tbody
+            tr(ng-repeat='plan in client.plans')
+              td {{plan.name}}
+              td.align-center
+                i(ng-class="plan.open_access | iconBoolean")
+              td.align-center
+                i(ng-class="plan.default | iconBoolean")

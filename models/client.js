@@ -6,9 +6,14 @@ var mongoose = require('mongoose')
   , crypto = require('crypto');
 
 var schema = mongoose.Schema({
-  name:   String,
+  name:   {type: String, index: {unique: true, dropDups: true}},
   secret: String,
   redirect_uri: String,
+  plans: [{
+    name: String,
+    open_access: { type: Boolean, default: false },
+    default: { type: Boolean, default: false },
+  }]
 });
 
 schema.methods.generateSecret = function(){

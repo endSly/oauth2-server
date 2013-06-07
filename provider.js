@@ -26,12 +26,13 @@ Logged In!                               |<------------+                |
  */
 
 
+var _ = require('underscore');
+
 var OAuth2Provider =  require('./lib/oauth2-provider')
   , Client =          require('./models/client')
   , User =            require('./models/user')
   , Grant =           require('./models/grant')
-  , Subscription =    require('./models/subscription')
-  , Plan =            require('./models/plan');
+  , Subscription =    require('./models/subscription');
 
 var provider = new OAuth2Provider({crypt_key: 'encryption secret', sign_key: 'signing secret'});
 
@@ -55,6 +56,11 @@ function error404(res) {
   res.render('404');
 }
 
+function error403(res) {
+  res.status(403);
+  res.render('403');
+}
+
 /* Checks access control to platform ands renders
  * authorize form
  */
@@ -71,23 +77,21 @@ provider.on('authorize_form', function(req, res, client_id, authorize_url, skip_
       }
       
       if (subscription) {
-        Plan.findById(subscription.plan_id, function(err, plan) {
-          res.render('sessions/authorize', {authorize_url: authorize_url, app: client, plan: plan, subscription: subscription});
-        });
-        return;
+        return res.render('sessions/authorize', {authorize_url: authorize_url, app: client, subscription: subscription});
       }
       
       // Find open plan and create subscription
-      Plan.findOne({client_id: client._id, open_access: true}, function(err, plan) {
-        if (err)      { return error500(res, err); }
-        if (!plan)    { return error404(res); }
-        var subscription = new Subscription({client_id: client._id, plan_id: plan._id, user_id: req.session.user, created_at: new Date()})
-        subscription.save(function(err){
-          if (err) { return error500(res, err); }
-          res.render('sessions/authorize', {authorize_url: authorize_url, app: client, plan: plan, subscription: subscription});
-        });
-      });
+
+      var plan = _.find(client.plans, function(plan) { return plan.default });
+      if (!plan) {
+        return error403(res);
+      }
       
+      var subscription = new Subscription({client_id: client._id, plan_name: plan.name, user_id: req.session.user});
+      subscription.save(function(err){
+        if (err) { return error500(res, err); }
+        res.render('sessions/authorize', {authorize_url: authorize_url, app: client, subscription: subscription});
+      });
     });
   });
 });
