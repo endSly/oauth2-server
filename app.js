@@ -9,7 +9,8 @@ var express = require('express')
   , https = require('https')
   , path = require('path')
   , mongoose = require('mongoose')
-  , MemoryStore = express.session.MemoryStore;
+  , MemoryStore = express.session.MemoryStore
+  , RedisStore = require('connect-redis')(express);
 
 var app = express();
 
@@ -23,7 +24,6 @@ app.configure(function(){
   app.use(express.query());
   app.use(express.methodOverride());
   app.use(express.cookieParser());
-  app.use(express.session({store: new MemoryStore({reapInterval: 5 * 60 * 1000}), secret: 'abracadabra'}));
   app.use(require('less-middleware')({ src: __dirname + '/public' }));
   app.use(express.static(path.join(__dirname, 'public')));
 });
@@ -31,10 +31,13 @@ app.configure(function(){
 // development only
 app.configure('development', function(){
   app.use(express.errorHandler());
-  mongoose.connect('mongodb://localhost/dev-oauth2-server');
+  app.use(express.session({store: new MemoryStore({reapInterval: 5 * 60 * 1000}), secret: 'abracadabra'}));
+  mongoose.connect('mongodb://localhost/dev-tenzing-oauth2');
+  
 });
 
 app.configure('production', function(){
+  app.use(express.session({store: new RedisStore({host:'localhost', pass: 'pass'}), secret: 'secret' }));
   mongoose.connect('mongodb://localhost/oauth2-server');
 });
 

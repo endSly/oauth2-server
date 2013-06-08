@@ -52,14 +52,14 @@ html(ng-app='app')
           a(ng-href='/admin')
             i.icon-home
             span Home
-        li(class=(menu == 'users' ? 'active' : ''))
+        li(ng-class='active')
           .pointer
             .arrow
             .arrow_border
           a(ng-href='/admin/users')
             i.icon-group
             span Users
-        li(class=(menu == 'apps' ? 'active' : ''))
+        li(ng-class='active')
           .pointer
             .arrow
             .arrow_border

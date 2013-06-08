@@ -31,16 +31,18 @@
               a.btn-flat.small Add filter
       a.btn-flat.success.pull-right(href='/admin/clients/new')
         span +
-        | NEW APLICATION
+        | NEW APPLICATION
   .row-fluid.table
     table.table.table-hover.table-wrapper
       thead
         tr
-          th.span4
-            | Name
-          th.span4
-            span.line
+          th.span2
             | Id
+          th.span3
+            | Name
+          th.span3
+            span.line
+            | Title
           th.span2
             span.line
             | Plans Count
@@ -50,9 +52,11 @@
       tbody
         tr(ng-repeat='client in clients')
           td 
+            a(ng-href="/admin/clients/{{client._id}}") {{client._id}}
+          td 
             a(ng-href="/admin/clients/{{client._id}}") {{client.name}}
           td 
-            a(ng-href="/admin/clients/{{client._id}}") {{client._id}}
+            a(ng-href="/admin/clients/{{client._id}}") {{client.title}}
           td.align-right {{client.plans.length}}
           td.align-right
             ul.actions

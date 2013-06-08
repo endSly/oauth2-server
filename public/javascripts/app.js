@@ -27,7 +27,7 @@ app.filter('iconBoolean', function() {
 
 
 function AdminCtrl($rootScope, $scope, $location){
-  
+  console.log($location);
 };
 
 function ClientIndexCtrl($rootScope, $scope, $location, $routeParams, $http){

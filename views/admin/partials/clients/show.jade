@@ -2,7 +2,8 @@
 #pad-wrapper.user-profile
   .row-fluid.header
     .span8
-      h3.span8 {{client.name}}
+      h3.span8 {{client.title}}
+      h4.span8 {{client.name}}
     .row.ctrls
       a.btn-flat.pull-right.danger.delete(data-toggle='tooltip', title='', data-placement='top', data-original-title='Delete user')
         i.icon-trash
@@ -27,13 +28,15 @@
         table.table.table-hover
           thead
             tr
-              th.span6 Name
-              th.span3 Open access
-              th.span3 Default Plan
+              th.span4 Title
+              th.span4 Name
+              th.span2.align-right Open access
+              th.span2.align-right Default Plan
           tbody
             tr(ng-repeat='plan in client.plans')
+              td {{plan.title}}
               td {{plan.name}}
-              td.align-center
+              td.align-right
                 i(ng-class="plan.open_access | iconBoolean")
-              td.align-center
+              td.align-right
                 i(ng-class="plan.default | iconBoolean")

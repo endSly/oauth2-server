@@ -63,7 +63,8 @@ module.exports = function(app){
   
   app.post('/admin/users/:id.json', checkAuthorized, function(req, res){
     User.findById(req.body.user_id, function(err, user){
-      user.update(req.body.user, function(err){
+      var userObj = _.omit(req.body.user, '_id', '__v');
+      user.update(userObj, function(err){
         res.json(err);
       });
     });

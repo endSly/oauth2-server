@@ -3,6 +3,9 @@
     .container
       form.inline-input
         .span9.field-box
+          label Title:
+          input.span9(type='text', ng-model='client.title')
+        .span9.field-box
           label Name:
           input.span9(type='text', ng-model='client.name')
         .span9.field-box
@@ -16,14 +19,17 @@
         table.table.table-hover.fluid-row
           thead
             tr
-              th.span5 Name
+              th.span3 Title
+              th.span3 Name
               th.span2 Open access
               th.span2 Default Plan
-              th.span3 Actions
+              th.span2 Actions
           tbody
             tr(ng-repeat='plan in client.plans')
               td
-                input.span9(type='text', ng-model='plan.name')
+                input.span11(type='text', ng-model='plan.title')
+              td
+                input.span11(type='text', ng-model='plan.name')
                 
               td.align-right
                 input(type='checkbox', ng-model='plan.open_access')
