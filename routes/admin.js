@@ -35,10 +35,10 @@ module.exports = function(app){
 
 
   app.get('/admin/users.json', checkAuthorized, function(req, res) {
-    User.find({}, '_id email name', {skip: req.params.skip || 0, limit: req.params.limit || 10}, function(err, users){
+    User.find({}, '_id email name', {skip: req.query.skip || 0, limit: req.query.limit || 10}, function(err, users){
       var rows = _.map(users, function(user){ return _.pick(user, '_id', 'email', 'name', 'email_md5'); });
       User.count({}, function(err, count){
-        res.json({rows: rows, count: count});
+        res.json({rows: rows, count: count, skip: req.query.skip || 0, limit: req.query.limit || 10});
       });
     });
     

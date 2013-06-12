@@ -34,6 +34,14 @@ module.exports = function(app){
     });
   });
   
+  app.get('/logout', function(req, res, next) {
+    if(req.session.user) {
+      req.session.user = null;
+    }
+    res.redirect('http://tenzing.urbegi.com');
+    
+  });
+  
   app.get('/signup', function(req, res, next) {
     if(req.session.user) {
       return res.redirect('/');

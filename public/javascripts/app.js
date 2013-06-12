@@ -1,7 +1,7 @@
 'use strict';
 
 var app = angular
-  .module('app', [])
+  .module('app', ['ui.bootstrap'])
   .config(['$routeProvider', '$locationProvider', function($routeProvider, $locationProvider){
     
     $routeProvider.when('/admin/clients/:id/edit',   {templateUrl: '/admin/partials/clients/edit',  controller: ClientShowCtrl});
@@ -61,18 +61,24 @@ function ClientShowCtrl($rootScope, $scope, $location, $routeParams, $http){
 };
 
 function UserIndexCtrl($rootScope, $scope, $location, $routeParams, $http){
-  $scope.currentPage = 0;
+  $scope.maxSize = 5;
   
-  $scope.loadRows = function(){
-    $http.get('/admin/users.json', {skip: ($scope.page * 10), limit: 10}).success(function(response) {
+  $scope.loadRows = function(page){
+    $scope.currentPage =  page;
+    $http.get('/admin/users.json?skip=' + ((page - 1) * 10) + '&limit=' + 10).success(function(response) {
+      
       $scope.users = response.rows;
       $scope.count = response.count;
-      var pagesCount = parseInt(response.count / 10) + 1;
-      var startPage = Math.max(0, $scope.currentPage - 2)
-        , endPage   = Math.min(pagesCount, $scope.currentPage + 2);
+      $scope.noOfPages = parseInt(response.count / 10) + 1;
     });
   };
-  $scope.loadRows();
+  $scope.loadRows(1);
+  
+  $scope.remove = function(row) {
+    $http.delete('/admin/users/' + row._id + '.json', function(){
+      $scope.users.splice($scope.users.indexOf(row), 1);
+    });
+  } 
 };
 
 function UserShowCtrl($rootScope, $scope, $location, $routeParams, $http){

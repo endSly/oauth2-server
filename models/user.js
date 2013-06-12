@@ -32,7 +32,7 @@ schema.statics.findByEmailAndPassword = function(email, password, cb){
 };
 
 schema.virtual('email_md5').get(function () {
-  return crypto.createHash('md5').update(this.email).digest("hex");
+  return crypto.createHash('md5').update(this.email || "").digest("hex");
 });
 
 module.exports = mongoose.model('user', schema);

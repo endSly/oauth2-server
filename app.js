@@ -14,6 +14,8 @@ var express = require('express')
 
 var app = express();
 
+var config = require('./config')[app.get('env')];
+
 app.configure(function(){
   app.set('port', process.env.PORT || 3000);
   app.set('ssl port', process.env.PORT || 3443);
@@ -26,19 +28,18 @@ app.configure(function(){
   app.use(express.cookieParser());
   app.use(require('less-middleware')({ src: __dirname + '/public' }));
   app.use(express.static(path.join(__dirname, 'public')));
+  
+  mongoose.connect(config.dbURL);
 });
 
 // development only
 app.configure('development', function(){
   app.use(express.errorHandler());
-  app.use(express.session({store: new MemoryStore({reapInterval: 5 * 60 * 1000}), secret: 'abracadabra'}));
-  mongoose.connect('mongodb://localhost/dev-tenzing-oauth2');
-  
+  app.use(express.session({store: new MemoryStore({reapInterval: 5 * 60 * 1000}), secret: config.sessionSecret}));
 });
 
 app.configure('production', function(){
-  app.use(express.session({store: new RedisStore({host:'localhost', pass: 'pass'}), secret: 'secret' }));
-  mongoose.connect('mongodb://localhost/oauth2-server');
+  app.use(express.session({store: new RedisStore(config.redisStore), secret: config.sessionSecret }));
 });
 
 var provider = require('./provider');
@@ -54,7 +55,7 @@ server.listen(app.get('port'), function(){
   console.log('OAuth 2 server listening on port ' + app.get('port') + ' in ' + app.get('env') + ' mode.');
 });
 
-if (process.env.OAUTH_SECURE) {
+try {
   var opts = {
     key: fs.readFileSync('ssl/server/keys/tenzing.urbegi.com.key'),
     cert: fs.readFileSync('ssl/server/certificates/tenzing.urbegi.com.crt'),
@@ -67,4 +68,6 @@ if (process.env.OAUTH_SECURE) {
   secureServer.listen(app.get('ssl port'), function(){
     console.log('Tenzing OAuth 2 secure server listening on port ' + app.get('ssl port') + ' in ' + app.get('env') + ' mode.');
   }); 
+} catch(err) {
+  console.log('[Error] '+ err);
 }
