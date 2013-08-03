@@ -19,7 +19,7 @@
       
       .section
         h6.span6 Subscriptions
-        a.btn-flat.success.pull-right(ng-href="/admin/users/{{user._id}}/subscriptions/new")
+        a.btn-flat.success.pull-right(ng-click="createNewSubscription()")
          span + 
          | NEW SUBSCRIPTION
         br
@@ -36,10 +36,10 @@
             tr(ng-repeat="subscription in subscriptions")
               td 
                 a(ng-href="/admin/clients/{{subscription.client_id}}")
-                  {{ subscription.client_id }}
+                  {{ subscription.client.title }}
               td {{ subscription.plan_name }}
               td
-                i(ng-class="subscription.allowed | iconBoolean")
+                i(class="icon-ok", ng-if="subscription.allowed")
               td {{ subscription.created_at }}
               td {{ subscription.expires_at }}
               td.align-right
@@ -47,5 +47,25 @@
                   li.last
                     a(ng-click="deleteSubscription(subscription)")
                       i.icon-trash
+            
+            tr(ng-if="showNewSubscriptionForm")
+              td
+                select(ng-model="newSubscription.client", ng-options="client.title for client in clients")
+              td
+                select(ng-model="newSubscription.plan",  ng-options="plan.title for plan in newSubscription.client.plans")
+              td
+                input(ng-model="newSubscription.allowed", type="checkbox")
+              td
+              td
+                input(ng-model="newSubscription.expires_at", type="datetime-local")
+              td.align-right
+                ul.actions
+                  li
+                    a(ng-click="saveSubscription()")
+                      i.icon-save
+                  li.last
+                    a(ng-click="cancel()")
+                      i.icon-trash
+                
                 
 

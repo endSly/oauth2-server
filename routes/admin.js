@@ -1,4 +1,5 @@
 var _ = require('underscore')
+  , async = require('async');
 
 var User =          require('../models/user')
   , Client =        require('../models/client')
@@ -55,7 +56,16 @@ module.exports = function(app){
     User.findById(req.params.id, function(err, user){
       user = _.pick(user, '_id', 'email', 'name', 'email_md5')
       Subscription.find({user_id: user._id}, function(err, subscriptions){
-        res.json({user: user, subscriptions: subscriptions});
+        async.map(subscriptions, function(subscription, cb){
+          Client.findById(subscription.client_id, function(err, client){
+            var subscriptionInfo =    _.pick(subscription, 'client_id', 'plan_name', 'allowed', 'created_at', 'expires_at');
+            subscriptionInfo.client = _.pick(client, '_id', 'name', 'title');
+            cb(err, subscriptionInfo);
+          });
+        }, function(err, subscriptions){
+          res.json({user: user, subscriptions: subscriptions});
+        })
+        
       });
       
     });
@@ -82,7 +92,7 @@ module.exports = function(app){
    */
   
   app.get('/admin/clients.json', checkAuthorized, function(req, res) {
-    Client.find({}, null, {skip: req.query.skip || 0, limit: req.query.limit || 10}, function(err, rows){
+    Client.find({}, null, {skip: req.query.skip || 0, limit: req.query.limit || 100}, function(err, rows){
       Client.count({}, function(err, count){
         res.json({rows: rows, count: count, skip: req.query.skip || 0, limit: req.query.limit || 10});
       });

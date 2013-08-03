@@ -33,7 +33,8 @@ function AdminCtrl($rootScope, $scope, $location){
 };
 
 function ClientIndexCtrl($rootScope, $scope, $location, $routeParams, $http){
-
+  $rootScope.menu = 'clients'; 
+  
   $scope.loadRows = function(page){
     $scope.currentPage =  page;
     $http.get('/admin/clients.json?skip=' + ((page - 1) * 10) + '&limit=' + 10).success(function(response) {
@@ -53,6 +54,7 @@ function ClientIndexCtrl($rootScope, $scope, $location, $routeParams, $http){
 };
 
 function ClientShowCtrl($rootScope, $scope, $location, $routeParams, $http){
+  $rootScope.menu = 'clients'; 
   
   if ($routeParams.id) {
     $http.get('/admin/clients/'+$routeParams.id+'.json').success(function(response) {
@@ -80,7 +82,8 @@ function ClientShowCtrl($rootScope, $scope, $location, $routeParams, $http){
 };
 
 function UserIndexCtrl($rootScope, $scope, $location, $routeParams, $http){
-
+  $rootScope.menu = 'users'; 
+  
   $scope.loadRows = function(page){
     $scope.currentPage =  page;
     $http.get('/admin/users.json?skip=' + ((page - 1) * 10) + '&limit=' + 10).success(function(response) {
@@ -100,10 +103,30 @@ function UserIndexCtrl($rootScope, $scope, $location, $routeParams, $http){
 };
 
 function UserShowCtrl($rootScope, $scope, $location, $routeParams, $http){
+  $rootScope.menu = 'users'; 
 
-  $http.get('/admin/users/'+$routeParams.id+'.json')
-  .success(function(response) {
+  $http.get('/admin/users/'+$routeParams.id+'.json').success(function(response) {
     $scope.user = response.user;
     $scope.subscriptions = response.subscriptions;
   });
+  
+  $scope.selectClient = function(client) {
+    $scope.selectedClient = client;
+    console.log(client)
+  };
+  
+  $scope.newSubscription = {};
+  
+  $scope.createNewSubscription = function() {
+    $scope.showNewSubscriptionForm = true;
+    $http.get('/admin/clients.json').success(function(response) {
+      $scope.clients = response.rows;
+    });
+  };
+  
+  $scope.saveSubscription = function() {
+    $scope.showNewSubscriptionForm = false;
+    
+    console.log($scope.newSubscription);
+  }
 };

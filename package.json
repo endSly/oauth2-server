@@ -12,7 +12,8 @@
     "connect-redis": "*",
     "mongoose": "3.6.x",
     "serializer": ">=0.0.2 <0.1.0",
-    "underscore": "*"
+    "underscore": "*",
+    "async": "*"
   },
   "engines": {
     "node": "0.8.x"

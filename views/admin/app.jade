@@ -11,7 +11,7 @@ html(ng-app='app')
 
     link(rel='stylesheet', type='text/css', ng-href='/stylesheets/admin.css')
     
-    script(src='//ajax.googleapis.com/ajax/libs/angularjs/1.0.7/angular.min.js')
+    script(src='//ajax.googleapis.com/ajax/libs/angularjs/1.1.5/angular.min.js')
     script(src='/javascripts/ui-bootstrap-tpls-0.3.0.min.js')
     script(src='/javascripts/app.js')
     
@@ -53,14 +53,14 @@ html(ng-app='app')
           a(ng-href='/admin')
             i.icon-home
             span Home
-        li(ng-class='active')
+        li(ng-class='{active: menu == "users"}')
           .pointer
             .arrow
             .arrow_border
           a(ng-href='/admin/users')
             i.icon-group
             span Users
-        li(ng-class='active')
+        li(ng-class='{active: menu == "clients"}')
           .pointer
             .arrow
             .arrow_border
