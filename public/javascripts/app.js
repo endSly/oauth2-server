@@ -14,6 +14,8 @@ var app = angular
     $routeProvider.when('/admin/users/:id',          {templateUrl: '/admin/partials/users/show',    controller: UserShowCtrl});
     $routeProvider.when('/admin/users',              {templateUrl: '/admin/partials/users/index',   controller: UserIndexCtrl});
     
+    $routeProvider.when('/admin/users/:id/subscriptions/new', {templateUrl: '/admin/partials/users/subscriptions/new', controller: UserShowCtrl});
+    
     $routeProvider.when('/admin',                    {templateUrl: '/admin/partials/index',         controller: AdminCtrl});
     
     $locationProvider.html5Mode(true);
@@ -31,17 +33,34 @@ function AdminCtrl($rootScope, $scope, $location){
 };
 
 function ClientIndexCtrl($rootScope, $scope, $location, $routeParams, $http){
-  $http.get('/admin/clients.json')
-  .success(function(response) {
-    $scope.clients = response;
-  });
+
+  $scope.loadRows = function(page){
+    $scope.currentPage =  page;
+    $http.get('/admin/clients.json?skip=' + ((page - 1) * 10) + '&limit=' + 10).success(function(response) {
+      
+      $scope.clients = response.rows;
+      $scope.count = response.count;
+      $scope.noOfPages = parseInt(response.count / 10) + 1;
+    });
+  };
+  $scope.loadRows(1);
+  
+  $scope.remove = function(row) {
+    $http.delete('/admin/clients/' + row._id + '.json', function(){
+      $scope.users.splice($scope.users.indexOf(row), 1);
+    });
+  } 
 };
 
 function ClientShowCtrl($rootScope, $scope, $location, $routeParams, $http){
-
-  $http.get('/admin/clients/'+$routeParams.id+'.json').success(function(response) {
-    $scope.client = response;
-  });
+  
+  if ($routeParams.id) {
+    $http.get('/admin/clients/'+$routeParams.id+'.json').success(function(response) {
+      $scope.client = response;
+    });
+  } else {
+    $scope.client = {plans: []};
+  }
 
   
   $scope.addPlan = function(){
@@ -61,8 +80,7 @@ function ClientShowCtrl($rootScope, $scope, $location, $routeParams, $http){
 };
 
 function UserIndexCtrl($rootScope, $scope, $location, $routeParams, $http){
-  $scope.maxSize = 5;
-  
+
   $scope.loadRows = function(page){
     $scope.currentPage =  page;
     $http.get('/admin/users.json?skip=' + ((page - 1) * 10) + '&limit=' + 10).success(function(response) {

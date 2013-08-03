@@ -65,13 +65,3 @@
         
   .pagination.pull-right
     pagination(num-pages="noOfPages", current-page="currentPage", on-select-page="loadRows(page)", previous-text="‹", next-text="›")
-  //
-    ul
-      li
-        a(ng-click='page($scope.current)') ‹
-        
-      li(ng-repeat='n in range(Math.min(5, pagesCount))')
-        a.active(href='http://detail.herokuapp.com/user-list.html#') {{n}}
-        
-      li
-        a(href='http://detail.herokuapp.com/user-list.html#') ›

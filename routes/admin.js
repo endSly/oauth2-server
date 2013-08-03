@@ -82,8 +82,10 @@ module.exports = function(app){
    */
   
   app.get('/admin/clients.json', checkAuthorized, function(req, res) {
-    Client.find({}, function(err, clients){
-      res.json(clients);
+    Client.find({}, null, {skip: req.query.skip || 0, limit: req.query.limit || 10}, function(err, rows){
+      Client.count({}, function(err, count){
+        res.json({rows: rows, count: count, skip: req.query.skip || 0, limit: req.query.limit || 10});
+      });
     });
   });
   

@@ -2,10 +2,10 @@
   .row-fluid.header
     h3 Applications
     .span10.pull-right
-      input.span5.search(type='text', placeholder='Type a user name...')
+      input.span5.search(type='text', placeholder='Type a name...')
       .ui-dropdown
         .head(data-toggle='tooltip', title='', data-original-title='Click me!')
-          | Filter users
+          | Filter apps
           i.arrow-down
         .dialog(style='display: none;')
           .pointer
@@ -71,18 +71,4 @@
                   i.icon-trash
                     
   .pagination.pull-right
-    ul
-      li
-        a(href='http://detail.herokuapp.com/user-list.html#') ‹
-      li
-        a.active(href='http://detail.herokuapp.com/user-list.html#') 1
-      li
-        a(href='http://detail.herokuapp.com/user-list.html#') 2
-      li
-        a(href='http://detail.herokuapp.com/user-list.html#') 3
-      li
-        a(href='http://detail.herokuapp.com/user-list.html#') 4
-      li
-        a(href='http://detail.herokuapp.com/user-list.html#') 5
-      li
-        a(href='http://detail.herokuapp.com/user-list.html#') ›
+    pagination(num-pages="noOfPages", current-page="currentPage", on-select-page="loadRows(page)", previous-text="‹", next-text="›")

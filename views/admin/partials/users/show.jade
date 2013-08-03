@@ -18,7 +18,10 @@
         pre.span6  {{user.email}}
       
       .section
-        h6 Subscriptions
+        h6.span6 Subscriptions
+        a.btn-flat.success.pull-right(ng-href="/admin/users/{{user._id}}/subscriptions/new")
+         span + 
+         | NEW SUBSCRIPTION
         br
         table.table.table-hover
           thead
