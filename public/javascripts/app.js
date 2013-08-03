@@ -29,7 +29,6 @@ app.filter('iconBoolean', function() {
 
 
 function AdminCtrl($rootScope, $scope, $location){
-  console.log($location);
 };
 
 function ClientIndexCtrl($rootScope, $scope, $location, $routeParams, $http){
@@ -110,9 +109,10 @@ function UserShowCtrl($rootScope, $scope, $location, $routeParams, $http){
     $scope.subscriptions = response.subscriptions;
   });
   
-  $scope.selectClient = function(client) {
-    $scope.selectedClient = client;
-    console.log(client)
+  $scope.removeSubscription = function(row) {
+    $http.delete('/admin/subscriptions/' + row._id + '.json', function(){
+      $scope.subscriptions.splice($scope.subscriptions.indexOf(row), 1);
+    });
   };
   
   $scope.newSubscription = {};
@@ -124,9 +124,23 @@ function UserShowCtrl($rootScope, $scope, $location, $routeParams, $http){
     });
   };
   
-  $scope.saveSubscription = function() {
-    $scope.showNewSubscriptionForm = false;
+  $scope.saveNewSubscription = function() {
+    var subscription = {
+      user_id:    $scope.user._id,
+      client_id:  $scope.newSubscription.client._id,
+      plan_name:  $scope.newSubscription.plan.name,
+      allowed:    $scope.newSubscription.allowed,
+      expires_at: $scope.newSubscription.expires_at
+    }
     
-    console.log($scope.newSubscription);
-  }
+    $http.post('/admin/subscriptions.json', {subscription: subscription}).success(function(subscription) {
+      $scope.subscriptions.push(subscription);
+    });
+  
+    $scope.showNewSubscriptionForm = false;
+  };
+  
+  $scope.deleteNewSubscription = function() {
+    $scope.showNewSubscriptionForm = false;
+  };
 };

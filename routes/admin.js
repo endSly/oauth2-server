@@ -58,7 +58,7 @@ module.exports = function(app){
       Subscription.find({user_id: user._id}, function(err, subscriptions){
         async.map(subscriptions, function(subscription, cb){
           Client.findById(subscription.client_id, function(err, client){
-            var subscriptionInfo =    _.pick(subscription, 'client_id', 'plan_name', 'allowed', 'created_at', 'expires_at');
+            var subscriptionInfo =    _.pick(subscription, '_id', 'client_id', 'plan_name', 'allowed', 'created_at', 'expires_at');
             subscriptionInfo.client = _.pick(client, '_id', 'name', 'title');
             cb(err, subscriptionInfo);
           });
@@ -86,6 +86,26 @@ module.exports = function(app){
     });
   });
   
+  /*
+   *  Subscriptions
+   */
+  
+  app.post('/admin/subscriptions.json', checkAuthorized, function(req, res){
+    var subscription = new Subscription(req.body.subscription);
+    subscription.save(function(err){
+      Client.findById(subscription.client_id, function(err, client){
+        var subscriptionInfo =    _.pick(subscription, 'client_id', 'plan_name', 'allowed', 'created_at', 'expires_at');
+        subscriptionInfo.client = _.pick(client, '_id', 'name', 'title');
+        res.json(subscriptionInfo);
+      });
+    });
+  });
+  
+  app.delete('/admin/subscriptions/:id.json', checkAuthorized, function(req, res) {
+    Subscription.findByIdAndRemove(req.params.id, function(err){
+      res.json(err);
+    });
+  });
   
   /*
    *  Clients

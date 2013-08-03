@@ -45,14 +45,14 @@
               td.align-right
                 ul.actions
                   li.last
-                    a(ng-click="deleteSubscription(subscription)")
+                    a(ng-click="removeSubscription(subscription)")
                       i.icon-trash
             
             tr(ng-if="showNewSubscriptionForm")
               td
-                select(ng-model="newSubscription.client", ng-options="client.title for client in clients")
+                select(ng-model="newSubscription.client", ng-options="client.title for client in clients", required="required")
               td
-                select(ng-model="newSubscription.plan",  ng-options="plan.title for plan in newSubscription.client.plans")
+                select(ng-model="newSubscription.plan",  ng-options="plan.title for plan in newSubscription.client.plans", required="required")
               td
                 input(ng-model="newSubscription.allowed", type="checkbox")
               td
@@ -61,10 +61,10 @@
               td.align-right
                 ul.actions
                   li
-                    a(ng-click="saveSubscription()")
+                    a(ng-click="saveNewSubscription()")
                       i.icon-save
                   li.last
-                    a(ng-click="cancel()")
+                    a(ng-click="deleteNewSubscription()")
                       i.icon-trash
                 
                 
