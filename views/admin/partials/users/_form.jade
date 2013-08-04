@@ -29,6 +29,6 @@
         textarea.span9
         span.charactersleft 90 characters remaining. Field limited to 100 characters
       .span11.field-box.actions
-        input.btn-glow.primary(type='submit', value='Save user')
+        button.btn-glow.primary(ng-click='saveUser()') Save user
         span OR
         input.reset(type='reset', value='Cancel')

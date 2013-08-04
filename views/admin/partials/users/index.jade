@@ -36,21 +36,26 @@
     table.table.table-hover
       thead
         tr
-          th.span4.sortable
+          th.span3.sortable
             | Name
-          th.span4.sortable
+          th.span3.sortable
             span.line
             | Email
-          th.span4.sortable.align-right
+          th.span3.sortable
+            span.line
+            | Created at
+          th.span3.sortable.align-right
             span.line
             | Action
       tbody
         tr(ng-repeat='user in users')
-          td
+          td.with-image
             img.img-circle.avatar.hidden-phone(src="//www.gravatar.com/avatar/{{user.email_md5}}?s=48")
             a.name(ng-href="/admin/users/{{user._id}}") {{user.name}}
           td
             a(ng-href="/admin/users/{{user._id}}") {{user.email}}
+          td
+            {{ user.created_at }}
           td.align-right
             ul.actions
               li

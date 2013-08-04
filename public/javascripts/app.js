@@ -95,22 +95,37 @@ function UserIndexCtrl($rootScope, $scope, $location, $routeParams, $http){
   $scope.loadRows(1);
   
   $scope.remove = function(row) {
-    $http.delete('/admin/users/' + row._id + '.json', function(){
+    $http.delete('/admin/users/' + row._id + '.json').success(function(){
       $scope.users.splice($scope.users.indexOf(row), 1);
     });
-  } 
+  }
 };
 
 function UserShowCtrl($rootScope, $scope, $location, $routeParams, $http){
   $rootScope.menu = 'users'; 
-
-  $http.get('/admin/users/'+$routeParams.id+'.json').success(function(response) {
-    $scope.user = response.user;
-    $scope.subscriptions = response.subscriptions;
-  });
+  
+  var newUser = $routeParams.id == undefined;
+  
+  if (!newUser) {
+    $http.get('/admin/users/'+$routeParams.id+'.json').success(function(response) {
+      $scope.user = response.user;
+      $scope.subscriptions = response.subscriptions;
+    });
+  }
+  
+  $scope.saveUser = function() {
+    var path = '/admin/users/' + ($routeParams.id || 'new') + '.json'
+    $http.post(path, {user: $scope.user}).success(function(user) {
+      if (newUser)
+        $location.path('/admin/users/' + user._id);
+      else
+        $scope.user = user;
+        
+    });
+  }
   
   $scope.removeSubscription = function(row) {
-    $http.delete('/admin/subscriptions/' + row._id + '.json', function(){
+    $http.delete('/admin/subscriptions/' + row._id + '.json').success(function(){
       $scope.subscriptions.splice($scope.subscriptions.indexOf(row), 1);
     });
   };

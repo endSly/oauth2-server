@@ -36,8 +36,8 @@ module.exports = function(app){
 
 
   app.get('/admin/users.json', checkAuthorized, function(req, res) {
-    User.find({}, '_id email name', {skip: req.query.skip || 0, limit: req.query.limit || 10}, function(err, users){
-      var rows = _.map(users, function(user){ return _.pick(user, '_id', 'email', 'name', 'email_md5'); });
+    User.find({}, '_id email name created_at', {skip: req.query.skip || 0, limit: req.query.limit || 10}, function(err, users){
+      var rows = _.map(users, function(user){ return _.pick(user, '_id', 'email', 'name', 'email_md5', 'created_at'); });
       User.count({}, function(err, count){
         res.json({rows: rows, count: count, skip: req.query.skip || 0, limit: req.query.limit || 10});
       });
@@ -54,6 +54,11 @@ module.exports = function(app){
   
   app.get('/admin/users/:id.json', checkAuthorized, function(req, res){
     User.findById(req.params.id, function(err, user){
+      if (err)
+        return res.json(500, {error: err});
+      if (!user)
+        return res.json(404);
+        
       user = _.pick(user, '_id', 'email', 'name', 'email_md5')
       Subscription.find({user_id: user._id}, function(err, subscriptions){
         async.map(subscriptions, function(subscription, cb){
