@@ -1,7 +1,7 @@
 'use strict';
 
 var app = angular
-  .module('app', ['ui.bootstrap'])
+  .module('app', ['ngRoute', 'ui.bootstrap'])
   .config(['$routeProvider', '$locationProvider', function($routeProvider, $locationProvider){
     
     $routeProvider.when('/admin/clients/:id/edit',   {templateUrl: '/admin/partials/clients/edit',  controller: ClientShowCtrl});
@@ -82,16 +82,24 @@ function ClientShowCtrl($rootScope, $scope, $location, $routeParams, $http){
 
 function UserIndexCtrl($rootScope, $scope, $location, $routeParams, $http){
   $rootScope.menu = 'users'; 
-  
-  $scope.loadRows = function(page){
-    $scope.currentPage =  page;
-    $http.get('/admin/users.json?skip=' + ((page - 1) * 10) + '&limit=' + 10).success(function(response) {
-      
+
+  var getRows = function(options){
+    $http.get('/admin/users.json?' + $.param(options)).success(function(response) {
       $scope.users = response.rows;
       $scope.count = response.count;
       $scope.noOfPages = parseInt(response.count / 10) + 1;
     });
   };
+    
+  $scope.filterUsers = function(){
+    getRows({query: $scope.filterQuery});
+  };
+  
+  $scope.loadRows = function(page){
+    $scope.currentPage = page;
+    getRows({skip: ((page - 1) * 10), limit: 10});
+  };
+  
   $scope.loadRows(1);
   
   $scope.remove = function(row) {

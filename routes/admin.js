@@ -6,7 +6,18 @@ var User =          require('../models/user')
   , Subscription =  require('../models/subscription');
 
 var checkAuthorized = function(req, res, next){
-  
+  next();
+  if(req.session.user) {
+    User.findById(req.session.user, function(err, user){
+      if (user && user.is_admin) {
+        return next()
+      }
+      console.log('unauthorized!');
+      res.status(404);
+      res.render('404');
+    });
+  }
+  /*
   if(req.client.authorized){
     var subject = req.connection.getPeerCertificate().subject;
 
@@ -26,6 +37,7 @@ var checkAuthorized = function(req, res, next){
     res.status(404);
     res.render('404');
   }
+  */
 };
 
 module.exports = function(app){
@@ -33,11 +45,12 @@ module.exports = function(app){
   /*
    *  Users
    */
-
-
   app.get('/admin/users.json', checkAuthorized, function(req, res) {
-    User.find({}, '_id email name created_at', {skip: req.query.skip || 0, limit: req.query.limit || 10}, function(err, users){
-      var rows = _.map(users, function(user){ return _.pick(user, '_id', 'email', 'name', 'email_md5', 'created_at'); });
+    var query = req.query.query 
+    ? {name: new RegExp(req.query.query, "i"), email: new RegExp(req.query.query, "i")} 
+    : {};
+    User.find(query, '_id email name created_at is_admin', {skip: req.query.skip || 0, limit: req.query.limit || 10}, function(err, users){
+      var rows = _.map(users, function(user){ return _.pick(user, '_id', 'email', 'name', 'email_md5', 'created_at', 'is_admin'); });
       User.count({}, function(err, count){
         res.json({rows: rows, count: count, skip: req.query.skip || 0, limit: req.query.limit || 10});
       });
@@ -59,7 +72,7 @@ module.exports = function(app){
       if (!user)
         return res.json(404);
         
-      user = _.pick(user, '_id', 'email', 'name', 'email_md5')
+      user = _.pick(user, '_id', 'email', 'name', 'email_md5', 'is_admin')
       Subscription.find({user_id: user._id}, function(err, subscriptions){
         async.map(subscriptions, function(subscription, cb){
           Client.findById(subscription.client_id, function(err, client){
@@ -77,7 +90,7 @@ module.exports = function(app){
   });
   
   app.post('/admin/users/:id.json', checkAuthorized, function(req, res){
-    User.findById(req.body.user_id, function(err, user){
+    User.findById(req.body.user._id, function(err, user){
       var userObj = _.omit(req.body.user, '_id', '__v');
       user.update(userObj, function(err){
         res.json(err);

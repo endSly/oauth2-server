@@ -2,33 +2,11 @@
   .row-fluid.header
     h3 Users
     .span10.pull-right
-      input.span5.search(type='text', placeholder='Type a user name...')
-      .ui-dropdown
-        .head(data-toggle='tooltip', title='', data-original-title='Click me!')
-          | Filter users
-          i.arrow-down
-        .dialog(style='display: none;')
-          .pointer
-            .arrow
-            .arrow_border
-          .body
-            p.title
-              | Show users where:
-            .form
-              select
-                option Name
-                option Email
-                option Number of orders
-                option Signed up
-                option Last seen
-              select
-                option is equal to
-                option is not equal to
-                option is greater than
-                option starts with
-                option contains
-              input(type='text')
-              a.btn-flat.small Add filter
+      input.span5.search(type='text', placeholder='Type a user name or email...', ng-model='filterQuery')
+      .ui-dropdown(ng-click='filterUsers()')
+        .head 
+          | Search Users...
+          
       a.btn-flat.success.pull-right(href='/admin/users/new')
         span +
         | NEW USER
@@ -41,10 +19,13 @@
           th.span3.sortable
             span.line
             | Email
+          th.span1.sortable
+            span.line
+            | Admin
           th.span3.sortable
             span.line
             | Created at
-          th.span3.sortable.align-right
+          th.span2.sortable.align-right
             span.line
             | Action
       tbody
@@ -54,6 +35,8 @@
             a.name(ng-href="/admin/users/{{user._id}}") {{user.name}}
           td
             a(ng-href="/admin/users/{{user._id}}") {{user.email}}
+          td
+            i(class="icon-ok", ng-if="user.is_admin")
           td
             {{ user.created_at }}
           td.align-right

@@ -11,7 +11,8 @@ var schema = mongoose.Schema({
   password_hash:  String,
   current_sign_in_ip: String,
   current_sign_in_at: Date,
-  created_at: {type: Date, default: Date.now },
+  created_at:     {type: Date,    default: Date.now },
+  is_admin:       {type: Boolean, default: false },
 });
 
 function generateHash(s){
