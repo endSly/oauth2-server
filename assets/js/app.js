@@ -1,37 +1,37 @@
+//= require_tree vendor
+//= require_self
+
 'use strict';
 
 var app = angular
   .module('app', ['ngRoute', 'ui.bootstrap'])
   .config(['$routeProvider', '$locationProvider', function($routeProvider, $locationProvider){
     
-    $routeProvider.when('/admin/clients/:id/edit',   {templateUrl: '/admin/partials/clients/edit',  controller: ClientShowCtrl});
-    $routeProvider.when('/admin/clients/new',        {templateUrl: '/admin/partials/clients/new',   controller: ClientShowCtrl});
-    $routeProvider.when('/admin/clients/:id',        {templateUrl: '/admin/partials/clients/show',  controller: ClientShowCtrl});
-    $routeProvider.when('/admin/clients',            {templateUrl: '/admin/partials/clients/index', controller: ClientIndexCtrl});
+    $routeProvider.when('/admin/clients/:id/edit',   {templateUrl: '/admin/partials/clients/edit',  controller: 'ClientShowCtrl'});
+    $routeProvider.when('/admin/clients/new',        {templateUrl: '/admin/partials/clients/new',   controller: 'ClientShowCtrl'});
+    $routeProvider.when('/admin/clients/:id',        {templateUrl: '/admin/partials/clients/show',  controller: 'ClientShowCtrl'});
+    $routeProvider.when('/admin/clients',            {templateUrl: '/admin/partials/clients/index', controller: 'ClientIndexCtrl'});
     
-    $routeProvider.when('/admin/users/:id/edit',     {templateUrl: '/admin/partials/users/edit',    controller: UserShowCtrl});
-    $routeProvider.when('/admin/users/new',          {templateUrl: '/admin/partials/users/new',     controller: UserShowCtrl});
-    $routeProvider.when('/admin/users/:id',          {templateUrl: '/admin/partials/users/show',    controller: UserShowCtrl});
-    $routeProvider.when('/admin/users',              {templateUrl: '/admin/partials/users/index',   controller: UserIndexCtrl});
+    $routeProvider.when('/admin/users/:id/edit',     {templateUrl: '/admin/partials/users/edit',    controller: 'UserShowCtrl'});
+    $routeProvider.when('/admin/users/new',          {templateUrl: '/admin/partials/users/new',     controller: 'UserShowCtrl'});
+    $routeProvider.when('/admin/users/:id',          {templateUrl: '/admin/partials/users/show',    controller: 'UserShowCtrl'});
+    $routeProvider.when('/admin/users',              {templateUrl: '/admin/partials/users/index',   controller: 'UserIndexCtrl'});
     
-    $routeProvider.when('/admin/users/:id/subscriptions/new', {templateUrl: '/admin/partials/users/subscriptions/new', controller: UserShowCtrl});
+    $routeProvider.when('/admin/users/:id/subscriptions/new', {templateUrl: '/admin/partials/users/subscriptions/new', controller: 'UserShowCtrl'});
     
-    $routeProvider.when('/admin',                    {templateUrl: '/admin/partials/index',         controller: AdminCtrl});
+    $routeProvider.when('/admin',                    {templateUrl: '/admin/partials/index',         controller: 'AdminCtrl'});
     
     $locationProvider.html5Mode(true);
   }]);
 
-app.filter('iconBoolean', function() {
-   return function(input) {
-     return input ? 'icon-ok' : '';
-   }
-});
 
+app.controller('AdminCtrl', ['$rootScope', '$scope', '$location', 
+function ($rootScope, $scope, $location){
 
-function AdminCtrl($rootScope, $scope, $location){
-};
+}]);
 
-function ClientIndexCtrl($rootScope, $scope, $location, $routeParams, $http){
+app.controller('ClientIndexCtrl', ['$rootScope', '$scope', '$location', '$routeParams', '$http', 
+function ($rootScope, $scope, $location, $routeParams, $http){
   $rootScope.menu = 'clients'; 
   
   $scope.loadRows = function(page){
@@ -50,9 +50,10 @@ function ClientIndexCtrl($rootScope, $scope, $location, $routeParams, $http){
       $scope.users.splice($scope.users.indexOf(row), 1);
     });
   } 
-};
+}]);
 
-function ClientShowCtrl($rootScope, $scope, $location, $routeParams, $http){
+app.controller('ClientShowCtrl', ['$rootScope', '$scope', '$location', '$routeParams', '$http', 
+function ($rootScope, $scope, $location, $routeParams, $http){
   $rootScope.menu = 'clients'; 
   
   if ($routeParams.id) {
@@ -78,9 +79,10 @@ function ClientShowCtrl($rootScope, $scope, $location, $routeParams, $http){
       $location.path('/admin/clients/' + client._id);
     });
   };
-};
+}]);
 
-function UserIndexCtrl($rootScope, $scope, $location, $routeParams, $http){
+app.controller('UserIndexCtrl', ['$rootScope', '$scope', '$location', '$routeParams', '$http', 
+function ($rootScope, $scope, $location, $routeParams, $http){
   $rootScope.menu = 'users'; 
 
   var getRows = function(options) {
@@ -107,9 +109,10 @@ function UserIndexCtrl($rootScope, $scope, $location, $routeParams, $http){
       $scope.users.splice($scope.users.indexOf(row), 1);
     });
   }
-};
+}]);
 
-function UserShowCtrl($rootScope, $scope, $location, $routeParams, $http){
+app.controller('UserShowCtrl', ['$rootScope', '$scope', '$location', '$routeParams', '$http', 
+function ($rootScope, $scope, $location, $routeParams, $http){
   $rootScope.menu = 'users'; 
   
   var newUser = $routeParams.id == undefined;
@@ -130,11 +133,7 @@ function UserShowCtrl($rootScope, $scope, $location, $routeParams, $http){
   $scope.saveUser = function() {
     var path = '/admin/users/' + ($routeParams.id || 'new') + '.json'
     $http.post(path, {user: $scope.user}).success(function(user) {
-      if (newUser)
-        $location.path('/admin/users/' + user._id);
-      else
-        $scope.user = user;
-        
+      $location.path('/admin/users/' + user._id);
     });
   }
   
@@ -172,4 +171,4 @@ function UserShowCtrl($rootScope, $scope, $location, $routeParams, $http){
   $scope.deleteNewSubscription = function() {
     $scope.showNewSubscriptionForm = false;
   };
-};
+}]);

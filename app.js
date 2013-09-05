@@ -26,8 +26,9 @@ app.configure(function(){
   app.use(express.query());
   app.use(express.methodOverride());
   app.use(express.cookieParser());
-  app.use(require('less-middleware')({ src: __dirname + '/public' }));
+  //app.use(require('less-middleware')({ src: __dirname + '/public' }));
   app.use(express.static(path.join(__dirname, 'public')));
+  app.use(require('connect-assets')());
   
   mongoose.connect(config.dbURL);
 });
