@@ -7,16 +7,22 @@
       a.btn-flat.pull-right.danger.delete(data-toggle='tooltip', title='', data-placement='top', data-original-title='Delete user')
         i.icon-trash
         | Delete
-      a.btn-flat.pull-right.edit(ng-href="./{{user._id}}/edit")
+      a.btn-flat.pull-right.edit(ng-href="/admin/users/{{user._id}}/edit")
         i.icon-pencil
         | Edit
+      a.btn-flat.pull-right.info(ng-click='signInWith(user)')
+        i.icon-user
+        | Sign in with User
   .row-fluid.profile
     .span12
       .section
         h6 Email
         br
         pre.span6  {{user.email}}
-      
+      .section
+        h6 User UID
+        br
+        pre.span6  {{user._id}}
       .section
         h6.span6 Subscriptions
         a.btn-flat.success.pull-right(ng-click="createNewSubscription()")

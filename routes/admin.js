@@ -5,17 +5,20 @@ var User =          require('../models/user')
   , Client =        require('../models/client')
   , Subscription =  require('../models/subscription');
 
-var checkAuthorized = function(req, res, next){
-  next();
+var checkAuthorized = function(req, res, next) {
   if(req.session.user) {
-    User.findById(req.session.user, function(err, user){
+    User.findById(req.session.user, function(err, user) {
       if (user && user.is_admin) {
+        req.current_user = user;
         return next()
       }
-      console.log('unauthorized!');
+      console.log("[User] Unauthorized access with user " + user.email);
       res.status(404);
       res.render('404');
     });
+  } else {
+    res.status(404);
+    res.render('404');
   }
   /*
   if(req.client.authorized){
@@ -39,6 +42,24 @@ var checkAuthorized = function(req, res, next){
   }
   */
 };
+
+var load = function(model, name) {
+  return function(req, res, next) {
+    model.findById(req.params.id, function(err, doc){
+      if (err)
+        return res.json(500, {error: err});
+      if (!doc)
+        return res.json(404);
+      
+      if (name)
+        req[name] = doc;
+      next();
+    });
+  };
+}
+
+var loadUser =    load(User, 'user')
+  , loadClient =  load(Client, 'client');
 
 module.exports = function(app){
 
@@ -64,37 +85,32 @@ module.exports = function(app){
       res.json(user);
     });
   });
-  
-  app.get('/admin/users/:id.json', checkAuthorized, function(req, res){
-    User.findById(req.params.id, function(err, user){
-      if (err)
-        return res.json(500, {error: err});
-      if (!user)
-        return res.json(404);
-        
-      user = _.pick(user, '_id', 'email', 'name', 'email_md5', 'is_admin')
-      Subscription.find({user_id: user._id}, function(err, subscriptions){
-        async.map(subscriptions, function(subscription, cb){
-          Client.findById(subscription.client_id, function(err, client){
-            var subscriptionInfo =    _.pick(subscription, '_id', 'client_id', 'plan_name', 'allowed', 'created_at', 'expires_at');
-            subscriptionInfo.client = _.pick(client, '_id', 'name', 'title');
-            cb(err, subscriptionInfo);
-          });
-        }, function(err, subscriptions){
-          res.json({user: user, subscriptions: subscriptions});
-        })
-        
+ 
+  app.post('/admin/users/:id/sign_in.json', checkAuthorized, loadUser, function(req, res) {
+    req.session.user = req.user._id;
+    res.json(req.user);
+  });
+   
+  app.get('/admin/users/:id.json', checkAuthorized, loadUser, function(req, res) {
+    var user = _.pick(req.user, '_id', 'email', 'name', 'email_md5', 'is_admin')
+    
+    Subscription.find({user_id: user._id}, function(err, subscriptions){
+      async.map(subscriptions, function(subscription, cb){
+        Client.findById(subscription.client_id, function(err, client){
+          var subscriptionInfo =    _.pick(subscription, '_id', 'client_id', 'plan_name', 'allowed', 'created_at', 'expires_at');
+          subscriptionInfo.client = _.pick(client, '_id', 'name', 'title');
+          cb(err, subscriptionInfo);
+        });
+      }, function(err, subscriptions){
+        res.json({user: user, subscriptions: subscriptions});
       });
-      
     });
   });
   
-  app.post('/admin/users/:id.json', checkAuthorized, function(req, res){
-    User.findById(req.body.user._id, function(err, user){
-      var userObj = _.omit(req.body.user, '_id', '__v');
-      user.update(userObj, function(err){
-        res.json(err);
-      });
+  app.post('/admin/users/:id.json', checkAuthorized, loadUser, function(req, res){
+    var userObj = _.omit(req.body.user, '_id', '__v');
+    req.user.update(userObj, function(err){
+      res.json(err);
     });
   });
   
@@ -146,20 +162,15 @@ module.exports = function(app){
     });
   });
   
-  app.get('/admin/clients/:id.json', checkAuthorized, function(req, res) {
-    Client.findById(req.params.id, function(err, client){
-      if (err) { return res.json(500, {error: err}); }
-      res.json(client);
-    });
+  app.get('/admin/clients/:id.json', checkAuthorized, loadClient, function(req, res) {
+    res.json(req.client);
   });
   
-  app.post('/admin/clients/:id.json', checkAuthorized, function(req, res) {
-    Client.findById(req.params.id, function(err, client){
-      var clientObj = _.omit(req.body.client, '_id', '__v', 'secret');
-      client.update(clientObj, function(err){
-        if (err) { return res.json(500, {error: err}); }
-        res.json(client);
-      });
+  app.post('/admin/clients/:id.json', checkAuthorized, loadClient, function(req, res) {
+    var clientObj = _.omit(req.body.client, '_id', '__v', 'secret');
+    req.client.update(clientObj, function(err){
+      if (err) { return res.json(500, {error: err}); }
+      res.json(req.client);
     });
   });
   

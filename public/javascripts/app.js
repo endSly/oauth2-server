@@ -83,7 +83,7 @@ function ClientShowCtrl($rootScope, $scope, $location, $routeParams, $http){
 function UserIndexCtrl($rootScope, $scope, $location, $routeParams, $http){
   $rootScope.menu = 'users'; 
 
-  var getRows = function(options){
+  var getRows = function(options) {
     $http.get('/admin/users.json?' + $.param(options)).success(function(response) {
       $scope.users = response.rows;
       $scope.count = response.count;
@@ -91,11 +91,11 @@ function UserIndexCtrl($rootScope, $scope, $location, $routeParams, $http){
     });
   };
     
-  $scope.filterUsers = function(){
+  $scope.filterUsers = function() {
     getRows({query: $scope.filterQuery});
   };
   
-  $scope.loadRows = function(page){
+  $scope.loadRows = function(page) {
     $scope.currentPage = page;
     getRows({skip: ((page - 1) * 10), limit: 10});
   };
@@ -120,6 +120,12 @@ function UserShowCtrl($rootScope, $scope, $location, $routeParams, $http){
       $scope.subscriptions = response.subscriptions;
     });
   }
+  
+  $scope.signInWith = function(user) {
+    $http.post('/admin/users/' + user._id + '/sign_in.json').success(function(){
+      $location.path('/');
+    })
+  };
   
   $scope.saveUser = function() {
     var path = '/admin/users/' + ($routeParams.id || 'new') + '.json'
