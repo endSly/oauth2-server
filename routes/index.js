@@ -37,7 +37,6 @@ module.exports = function(app){
   app.get('/logout', function(req, res, next) {
     req.session.user = null;
     res.redirect('/login');
-    
   });
   
   app.get('/signup', function(req, res, next) {

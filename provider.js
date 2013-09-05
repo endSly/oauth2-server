@@ -114,18 +114,18 @@ provider.on('save_grant', function(req, client_id, code, next) {
   
   Client.findById(client_id, function(err, client){
     if (!client) {
-      res.json('unknown client', 404);
+      next({error: 'unknown client'});
       return;
     }
     User.findById(req.session.user, function(err, user){
       if (!user) {
-        res.json('access error', 404);
+        next({error: 'access error'});
         return;
       }
       var grant = new Grant({user_id: user._id, client_id: client._id, secret: code});
       grant.save(function(err){
         if (err) {
-          res.json('error saving grant', 500);
+          next({error: 'error saving grant'});
           return;
         }
         next();
