@@ -6,13 +6,13 @@
     "start": "node app.js"
   },
   "dependencies": {
-    "express": "3.3.x",
+    "express": "3.4.x",
     "jade": "*",
     "less": "*",
     "coffee-script": "*",
     "connect-redis": "*",
-    "connect-assets": "2.5.x",
-    "mongoose": "3.6.x",
+    "connect-assets": "3.0.x",
+    "mongoose": "3.8.x",
     "serializer": "0.x",
     "underscore": "*",
     "async": "*"

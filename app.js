@@ -28,8 +28,8 @@ app.configure(function(){
   app.use(express.cookieParser());
   //app.use(require('less-middleware')({ src: __dirname + '/public' }));
   app.use(express.static(path.join(__dirname, 'public')));
-  app.use(require('connect-assets')());
-  
+  app.use(require('connect-assets')({ helperContext: app.locals }));
+
   mongoose.connect(config.dbURL);
 });
 
